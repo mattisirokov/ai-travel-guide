@@ -12,6 +12,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
+import { useAuthStore } from "@/stores/useAuthStore";
+
 import { useColorScheme } from "@/components/useColorScheme";
 
 export {
@@ -32,6 +34,11 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
   });
+
+  // Initialize auth store
+  useEffect(() => {
+    useAuthStore.getState().initialize();
+  }, []);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -58,6 +65,7 @@ function RootLayoutNav() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="login" options={{ headerShown: false }} />
       </Stack>
     </ThemeProvider>
   );
