@@ -5,7 +5,7 @@ import { UserProfile, LoadingStatus } from "@/types";
 
 interface AuthStore {
   session: Session | null;
-  user: UserProfile | null;
+  userProfile: UserProfile | null;
   loading: boolean;
   status: LoadingStatus;
 
@@ -18,7 +18,7 @@ interface AuthStore {
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
   session: null,
-  user: null,
+  userProfile: null,
   loading: true,
   status: "idle",
 
@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         const userData = await get().fetchUserData(session.user.id);
         if (userData) {
           set({
-            user: {
+            userProfile: {
               user_id: session.user.id,
               first_name: userData.first_name,
               last_name: userData.last_name,
@@ -64,7 +64,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
           const userData = await get().fetchUserData(session.user.id);
           if (userData) {
             set({
-              user: {
+              userProfile: {
                 user_id: session.user.id,
                 first_name: userData.first_name,
                 last_name: userData.last_name,
@@ -123,6 +123,6 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   signOut: async (): Promise<void> => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-    set({ session: null, user: null });
+    set({ session: null, userProfile: null });
   },
 }));

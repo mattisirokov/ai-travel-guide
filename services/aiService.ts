@@ -8,10 +8,12 @@ const openai = new OpenAI({
 
 interface ChatCompletionParams {
   messages: ChatCompletionMessageParam[];
-  model: "gpt-4" | "gpt-3.5-turbo";
+  model?: string;
   max_tokens?: number;
   temperature?: number;
-  responseSchema?: { type: "json_object" | "text" };
+  responseSchema?: {
+    type: "json_object" | "text";
+  };
 }
 
 export const createChatCompletion = async ({
@@ -23,7 +25,7 @@ export const createChatCompletion = async ({
 }: ChatCompletionParams): Promise<string> => {
   try {
     const completion = await openai.chat.completions.create({
-      model,
+      model: model || "gpt-4o-mini",
       messages,
       max_tokens,
       temperature,

@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function TabOneScreen() {
-  const { session, user, signOut } = useAuthStore();
+  const { session, userProfile, signOut } = useAuthStore();
 
   const handleAuth = async () => {
     if (session) {
@@ -21,12 +21,13 @@ export default function TabOneScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to AI Travel Guide</Text>
-      {user && (
+      {userProfile && (
         <Text style={styles.subtitle}>
-          Hello, {user.first_name} {user.last_name}
+          Hello, {userProfile.first_name} {userProfile.last_name}
         </Text>
       )}
       <Button title={session ? "Sign Out" : "Login"} onPress={handleAuth} />
+      <Button title="Open Modal" onPress={() => router.push("/modal")} />
       <View style={styles.separator} />
     </View>
   );

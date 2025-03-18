@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 import {
@@ -35,21 +35,31 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
+  const { session, initialize } = useAuthStore();
+
   // Initialize auth store
   useEffect(() => {
-    useAuthStore.getState().initialize();
+    initialize();
   }, []);
+
+  // Handle navigation after fonts are loaded
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+
+      // Only navigate after the layout is mounted and loaded
+      if (session) {
+        router.replace("/(tabs)");
+      } else {
+        router.replace("/login");
+      }
+    }
+  }, [loaded, session]);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
 
   if (!loaded) {
     return null;
@@ -66,6 +76,13 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="modal"
+          options={{
+            presentation: "modal",
+            headerShown: false,
+          }}
+        />
       </Stack>
     </ThemeProvider>
   );
