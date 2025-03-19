@@ -6,13 +6,14 @@ import { useOpenCamera } from "@/media/hooks/useOpenCamera";
 import { useSelectMediaFromLibrary } from "@/media/hooks/useSelectMediaFromLibrary";
 import { useFileUpload } from "@/media/hooks/useFileUpload";
 import { useMediaStore } from "@/stores/useMediaStore";
-
+import { useLocation } from "@/services/useLocation";
 interface SelectMediaTileProps {
   type: "camera" | "gallery";
 }
 
 export default function SelectMediaTile({ type }: SelectMediaTileProps) {
   const { uploadFile } = useFileUpload();
+  const { getUserLocation } = useLocation();
   const { addMedia, setUploadStatus } = useMediaStore();
 
   const handleMediaSelect = async (fileUri: string) => {
@@ -40,6 +41,7 @@ export default function SelectMediaTile({ type }: SelectMediaTileProps) {
     } else {
       openCamera();
     }
+    getUserLocation();
   };
 
   return (

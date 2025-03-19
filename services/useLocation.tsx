@@ -1,11 +1,9 @@
-import { useState } from "react";
 import * as Location from "expo-location";
 
-export const useLocation = () => {
-  const [longitude, setLongitude] = useState<number | null>(null);
-  const [latitude, setLatitude] = useState<number | null>(null);
+import { useUserLocationStore } from "@/stores/useUserLocationStore";
 
-  const [error, setError] = useState<string | null>(null);
+export const useLocation = () => {
+  const { setLocation, setError } = useUserLocationStore();
 
   const getUserLocation = async () => {
     let locationPermission = await Location.requestForegroundPermissionsAsync();
@@ -17,13 +15,12 @@ export const useLocation = () => {
 
     if (locationPermission.status === "granted") {
       let location = await Location.getCurrentPositionAsync();
-      setLongitude(location.coords.longitude);
-      setLatitude(location.coords.latitude);
+      setLocation(location.coords.longitude, location.coords.latitude);
     } else {
-      setError("Location permission not granted");
+      setError("Loca  tion permission not granted");
       return;
     }
   };
 
-  return { getUserLocation, longitude, latitude, error };
+  return { getUserLocation };
 };

@@ -7,6 +7,7 @@ interface ChatCompletionOptions {
   model?: string;
   max_tokens?: number;
   temperature?: number;
+  systemPrompt?: string;
 }
 
 interface ChatCompletionError {
@@ -33,6 +34,7 @@ export const useChatCompletion = () => {
         model: options?.model,
         max_tokens: options?.max_tokens,
         temperature: options?.temperature,
+        systemPrompt: options?.systemPrompt,
       });
 
       setGeneratedText(response);

@@ -13,6 +13,7 @@ export type AuthContext = {
 export type LoadingStatus = "idle" | "fetching" | "complete" | "error";
 
 export interface UserProfile {
+  id: string;
   user_id: string;
   first_name: string;
   last_name: string;
@@ -28,4 +29,13 @@ export interface UploadProgress {
 export interface UploadResult {
   path: string;
   url: string;
+}
+
+export interface Guide {
+  id: string;
+  user_id: string;
+  content: string;
+  image_url: string;
+  longitude: number;
+  latitude: number;
 }

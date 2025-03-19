@@ -14,6 +14,7 @@ interface ChatCompletionParams {
   responseSchema?: {
     type: "json_object" | "text";
   };
+  systemPrompt?: string;
 }
 
 export const createChatCompletion = async ({
@@ -22,11 +23,22 @@ export const createChatCompletion = async ({
   max_tokens = 500,
   temperature = 0.7,
   responseSchema,
+  systemPrompt,
 }: ChatCompletionParams): Promise<string> => {
   try {
+    const finalMessages: ChatCompletionMessageParam[] = systemPrompt
+      ? [
+          {
+            role: "system",
+            content: systemPrompt,
+          },
+          ...messages,
+        ]
+      : messages;
+
     const completion = await openai.chat.completions.create({
       model: model || "gpt-4o-mini",
-      messages,
+      messages: finalMessages,
       max_tokens,
       temperature,
       response_format: responseSchema,
@@ -36,6 +48,55 @@ export const createChatCompletion = async ({
   } catch (error) {
     if (error instanceof OpenAI.APIError) {
       console.error("OpenAI API Error:", {
+        status: error.status,
+        message: error.message,
+        code: error.code,
+      });
+    }
+    throw error;
+  }
+};
+
+interface ImageAnalysisParams {
+  image: string;
+  prompt?: string;
+  max_tokens?: number;
+  temperature?: number;
+}
+
+export const analyzeImages = async ({
+  image,
+  prompt = "What is in this image?",
+  max_tokens = 500,
+  temperature = 0.7,
+}: ImageAnalysisParams): Promise<string> => {
+  try {
+    const messages: ChatCompletionMessageParam[] = [
+      {
+        role: "user",
+        content: [
+          { type: "text", text: prompt },
+          {
+            type: "image_url",
+            image_url: {
+              url: image,
+            },
+          },
+        ],
+      },
+    ];
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages,
+      max_tokens,
+      temperature,
+    });
+
+    return response.choices[0].message.content || "";
+  } catch (error) {
+    if (error instanceof OpenAI.APIError) {
+      console.error("OpenAI Vision API Error:", {
         status: error.status,
         message: error.message,
         code: error.code,
