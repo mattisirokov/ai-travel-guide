@@ -1,13 +1,17 @@
 import { useState } from "react";
 
 import { createChatCompletion } from "./aiService";
-import { ChatCompletionMessageParam } from "openai/resources";
+import {
+  ChatCompletionMessageParam,
+  ResponseFormatJSONSchema,
+} from "openai/resources";
 
 interface ChatCompletionOptions {
   model?: string;
   max_tokens?: number;
   temperature?: number;
   systemPrompt?: string;
+  responseSchema?: ResponseFormatJSONSchema;
 }
 
 interface ChatCompletionError {
@@ -35,6 +39,7 @@ export const useChatCompletion = () => {
         max_tokens: options?.max_tokens,
         temperature: options?.temperature,
         systemPrompt: options?.systemPrompt,
+        responseSchema: options?.responseSchema,
       });
 
       setGeneratedText(response);

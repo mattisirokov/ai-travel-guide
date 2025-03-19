@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { analyzeImages } from "./aiService";
+import { ResponseFormatJSONSchema } from "openai/resources";
 
 interface ImageAnalysisOptions {
   prompt?: string;
   max_tokens?: number;
   temperature?: number;
+  responseSchema?: ResponseFormatJSONSchema;
 }
 
 interface ImageAnalysisError {
@@ -31,6 +33,7 @@ export const useImageAnalysis = () => {
         prompt: options?.prompt,
         max_tokens: options?.max_tokens,
         temperature: options?.temperature,
+        responseSchema: options?.responseSchema,
       });
 
       setAnalysisResult(response);

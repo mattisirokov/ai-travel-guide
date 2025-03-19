@@ -20,7 +20,7 @@ export const getGuide = async (guideId: string) => {
   return data;
 };
 
-export const createGuide = async (guide: Omit<Guide, "id">) => {
+export const saveGuideToDatabase = async (guide: Omit<Guide, "id">) => {
   const { data, error } = await supabase
     .from("Guides")
     .insert(guide)

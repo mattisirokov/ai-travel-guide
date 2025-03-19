@@ -48,7 +48,7 @@ export default function LoadingGuideScreen() {
   const getStatusMessage = () => {
     switch (status.status) {
       case "analyzing":
-        return "Analyzing your location...";
+        return "Analyzing your location & image...";
       case "generating":
         return "Creating your personalized guide...";
       case "saving":

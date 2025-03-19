@@ -34,8 +34,20 @@ export interface UploadResult {
 export interface Guide {
   id: string;
   user_id: string;
-  content: string;
+  content: ContentStructure;
   image_url: string;
   longitude: number;
   latitude: number;
+}
+
+export interface ContentStructure {
+  title: string;
+  introduction: string;
+  historicalContext: string;
+  architecturalDetails: string;
+  culturalSignificance: string;
+  interestingStories: string[];
+  notableFeatures: string[];
+  modernContext: string;
+  conclusion: string;
 }

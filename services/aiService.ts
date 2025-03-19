@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { ResponseFormatJSONSchema } from "openai/resources";
 import { ChatCompletionMessageParam } from "openai/resources";
 
 const openai = new OpenAI({
@@ -11,9 +12,7 @@ interface ChatCompletionParams {
   model?: string;
   max_tokens?: number;
   temperature?: number;
-  responseSchema?: {
-    type: "json_object" | "text";
-  };
+  responseSchema?: ResponseFormatJSONSchema;
   systemPrompt?: string;
 }
 
@@ -62,6 +61,7 @@ interface ImageAnalysisParams {
   prompt?: string;
   max_tokens?: number;
   temperature?: number;
+  responseSchema?: ResponseFormatJSONSchema;
 }
 
 export const analyzeImages = async ({
@@ -69,6 +69,7 @@ export const analyzeImages = async ({
   prompt = "What is in this image?",
   max_tokens = 500,
   temperature = 0.7,
+  responseSchema,
 }: ImageAnalysisParams): Promise<string> => {
   try {
     const messages: ChatCompletionMessageParam[] = [
@@ -91,8 +92,10 @@ export const analyzeImages = async ({
       messages,
       max_tokens,
       temperature,
+      response_format: responseSchema,
     });
 
+    console.log("REPOSNSE TO THE IMAGE ANALYSIS", response);
     return response.choices[0].message.content || "";
   } catch (error) {
     if (error instanceof OpenAI.APIError) {
