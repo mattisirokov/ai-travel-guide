@@ -49,9 +49,7 @@ export default function HomeLayout({
           </TouchableOpacity>
         </View>
 
-        <View style={styles.placeholder}>
-          <View style={styles.placeholderInset}>{children}</View>
-        </View>
+        <View style={styles.content}>{children}</View>
       </View>
     </SafeAreaView>
   );
@@ -101,23 +99,9 @@ const styles = StyleSheet.create({
     height: 14,
     backgroundColor: "#d1d5db",
   },
-  /** Placeholder */
-  placeholder: {
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
-    height: 400,
+  /** Content */
+  content: {
+    flex: 1,
     marginTop: 24,
-    padding: 0,
-    backgroundColor: "transparent",
-  },
-  placeholderInset: {
-    borderWidth: 4,
-    borderColor: "#e5e7eb",
-    borderStyle: "dashed",
-    borderRadius: 9,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
   },
 });

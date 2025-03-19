@@ -1,4 +1,4 @@
-import { Button, View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 
 import { router } from "expo-router";
 
@@ -7,6 +7,9 @@ import { useSelectMediaFromLibrary } from "@/media/hooks/useSelectMediaFromLibra
 import { useFileUpload } from "@/media/hooks/useFileUpload";
 import { useMediaStore } from "@/stores/useMediaStore";
 import { useLocation } from "@/services/useLocation";
+
+import Colors from "@/constants/Colors";
+
 interface SelectMediaTileProps {
   type: "camera" | "gallery";
 }
@@ -36,45 +39,39 @@ export default function SelectMediaTile({ type }: SelectMediaTileProps) {
   const { openCamera } = useOpenCamera(handleMediaSelect);
 
   const onSelect = () => {
+    getUserLocation();
+
     if (type === "gallery") {
       selectImageFromGallery();
     } else {
       openCamera();
     }
-    getUserLocation();
   };
 
   return (
-    <View style={styles.container}>
-      <Button
-        title={`Select Media from ${
-          type.charAt(0).toUpperCase() + type.slice(1)
-        }`}
-        onPress={onSelect}
-      />
-    </View>
+    <TouchableOpacity onPress={onSelect}>
+      <View style={styles.button}>
+        <Text style={styles.buttonText}>
+          {type === "gallery" ? "Select image from gallery" : "Open camera"}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  button: {
+    minWidth: "100%",
+    padding: 16,
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
-    padding: 10,
-    flex: 0.25,
-    borderWidth: 1,
-    borderColor: "grey",
-    marginBottom: 10,
-    borderRadius: 10,
+    borderRadius: 12,
+    marginBottom: 12,
+    backgroundColor: Colors.primary,
   },
-  progressContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  image: {
-    width: 200,
-    height: 200,
+  buttonText: {
+    fontSize: 18,
+    color: "white",
+    fontWeight: "500",
   },
 });

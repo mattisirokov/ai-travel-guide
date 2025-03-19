@@ -11,6 +11,7 @@ import { AUDIOGUIDE_PROMPT } from "@/constants/prompts/audioguidePrompt";
 
 import { guideResponseSchema } from "@/constants/schemas/guideResponseSchema";
 import { locationAnalysisSchema } from "@/constants/schemas/locationAnalysisSchema";
+
 import { ContentStructure } from "@/types";
 
 interface GenerateGuideParams {

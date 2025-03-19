@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useAuthStore } from "@/stores/useAuthStore";
-
+import { useSyncUserGuides } from "@/stores/useSyncUserGuides";
 import { useColorScheme } from "@/components/useColorScheme";
 
 export {
@@ -36,6 +36,7 @@ export default function RootLayout() {
   });
 
   const { session, initialize } = useAuthStore();
+  useSyncUserGuides();
 
   // Initialize auth store
   useEffect(() => {

@@ -38,6 +38,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         if (userData) {
           set({
             userProfile: {
+              id: session.user.id,
               user_id: session.user.id,
               first_name: userData.first_name,
               last_name: userData.last_name,
@@ -65,6 +66,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
           if (userData) {
             set({
               userProfile: {
+                id: session.user.id,
                 user_id: session.user.id,
                 first_name: userData.first_name,
                 last_name: userData.last_name,

@@ -10,7 +10,10 @@ import {
 
 import { useAuthStore } from "@/stores/useAuthStore";
 
-import { UserProfileCard, UserPreferences, Resources } from ".";
+import { UserProfileCard } from "./UserProfileCard";
+import { UserPreferences } from "./UserPreferences";
+
+import { Resources } from "./Resources";
 
 export default function Settings() {
   const [form, setForm] = useState({
