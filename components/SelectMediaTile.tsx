@@ -1,5 +1,7 @@
 import { Button, View, StyleSheet } from "react-native";
 
+import { router } from "expo-router";
+
 import { useOpenCamera } from "@/media/hooks/useOpenCamera";
 import { useSelectMediaFromLibrary } from "@/media/hooks/useSelectMediaFromLibrary";
 import { useFileUpload } from "@/media/hooks/useFileUpload";
@@ -7,13 +9,9 @@ import { useMediaStore } from "@/stores/useMediaStore";
 
 interface SelectMediaTileProps {
   type: "camera" | "gallery";
-  onMediaSelected: () => void;
 }
 
-export default function SelectMediaTile({
-  type,
-  onMediaSelected,
-}: SelectMediaTileProps) {
+export default function SelectMediaTile({ type }: SelectMediaTileProps) {
   const { uploadFile } = useFileUpload();
   const { addMedia, setUploadStatus } = useMediaStore();
 
@@ -21,7 +19,7 @@ export default function SelectMediaTile({
     try {
       const uploadResult = await uploadFile(fileUri);
       addMedia(uploadResult.url);
-      onMediaSelected();
+      router.push("/loadingGuide");
     } catch (error) {
       setUploadStatus({
         status: "error",
@@ -62,6 +60,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     padding: 10,
+    flex: 0.25,
+    borderWidth: 1,
+    borderColor: "grey",
+    marginBottom: 10,
+    borderRadius: 10,
   },
   progressContainer: {
     flexDirection: "row",

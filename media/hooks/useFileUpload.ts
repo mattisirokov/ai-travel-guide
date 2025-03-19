@@ -62,6 +62,7 @@ export const useFileUpload = () => {
       } = supabase.storage.from("locations").getPublicUrl(filename);
 
       setUploadStatus({ status: "success" });
+
       return {
         path: data.path,
         url: publicUrl,
@@ -78,7 +79,6 @@ export const useFileUpload = () => {
   return { uploadFile };
 };
 
-// Helper function to decode base64
 function decode(base64: string): Uint8Array {
   const binaryString = atob(base64);
   const bytes = new Uint8Array(binaryString.length);
