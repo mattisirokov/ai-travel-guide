@@ -36,7 +36,7 @@ export function Text(props: TextProps) {
   return (
     <DefaultText
       allowFontScaling={false}
-      style={[{ color, fontFamily: "Poppins" }, style]}
+      style={[{ color, fontFamily: "Poppins-Regular" }, style]}
       {...otherProps}
     />
   );
