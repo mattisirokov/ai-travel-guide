@@ -6,9 +6,11 @@ import { useAuthStore } from "@/stores/useAuthStore";
 
 import HomeLayout from "@/components/home/HomeLayout";
 import ContentFeed from "@/components/home/ContentFeed";
+import useGuideStore from "@/stores/useGuideStore";
 
 export default function TabOneScreen() {
   const { session, userProfile, signOut } = useAuthStore();
+  const { guides } = useGuideStore();
 
   return (
     <HomeLayout>

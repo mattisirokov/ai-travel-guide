@@ -1,27 +1,37 @@
 import { useEffect } from "react";
 import { useAuthStore } from "./useAuthStore";
-import { getUsersGuides } from "@/services/supabaseService";
 import useGuideStore from "./useGuideStore";
 
+import { getUsersGuides } from "@/services/supabaseService";
+
 export const useSyncUserGuides = () => {
-  const { session, status } = useAuthStore();
-  const { setGuides } = useGuideStore();
+  const { userProfile, status: authStoreStatus } = useAuthStore();
+  const { setGuides, setLoadingStatus, setError } = useGuideStore();
+
+  const hasSession = userProfile?.id;
 
   useEffect(() => {
     const syncGuides = async () => {
-      if (session?.user?.id && status === "complete") {
+      if (hasSession && authStoreStatus === "complete") {
         try {
-          const guides = await getUsersGuides(session.user.id);
+          setLoadingStatus("fetching");
+          setError(null);
+          const guides = await getUsersGuides(userProfile.id);
           setGuides(guides);
+          setLoadingStatus("complete");
           console.log("Guides synced successfully:", guides.length);
         } catch (error) {
           console.error("Failed to sync guides:", error);
+          setError(
+            error instanceof Error ? error.message : "Failed to sync guides"
+          );
+          setLoadingStatus("error");
         }
       }
     };
 
     syncGuides();
-  }, [status]);
+  }, [authStoreStatus]);
 };
 
 export default useSyncUserGuides;
