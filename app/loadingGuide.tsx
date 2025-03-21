@@ -11,7 +11,7 @@ import { useGenerateAIGuide } from "@/services/useGenerateAIGuide";
 export default function LoadingGuideScreen() {
   const { media, resetMediaFiles } = useMediaStore();
   const { latitude, longitude } = useUserLocationStore();
-  const { generateGuide, status, isProcessing } = useGenerateAIGuide();
+  const { generateGuide, status } = useGenerateAIGuide();
 
   useEffect(() => {
     const generateAndSaveGuide = async () => {

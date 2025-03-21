@@ -37,10 +37,22 @@ export const saveGuideToDatabase = async (
 };
 
 export const getUsersGuides = async (userId: string): Promise<Guide[]> => {
+  const { data, error } = await supabase.from("Guides").select("*");
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const deleteGuide = async (guideId: number): Promise<Guide> => {
   const { data, error } = await supabase
     .from("Guides")
-    .select("*")
-    .eq("user_id", userId);
+    .delete()
+    .eq("id", guideId)
+    .select()
+    .single();
 
   if (error) {
     throw error;

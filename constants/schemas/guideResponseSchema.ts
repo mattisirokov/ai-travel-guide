@@ -18,6 +18,11 @@ export const guideResponseSchema: ResponseFormatJSONSchema = {
           description:
             "An engaging welcome that captures the essence of the location and sets the scene",
         },
+        funFact: {
+          type: "string",
+          description:
+            "A historical fun fact about the location that is not obvious from the image. If there is no fun fact, return an empty string.",
+        },
         historicalContext: {
           type: "string",
           description:

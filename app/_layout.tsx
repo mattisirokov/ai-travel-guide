@@ -36,7 +36,7 @@ export default function RootLayout() {
   });
 
   const { session, initialize } = useAuthStore();
-  useSyncUserGuides();
+  // useSyncUserGuides();
 
   // Initialize auth store
   useEffect(() => {

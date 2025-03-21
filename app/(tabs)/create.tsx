@@ -6,13 +6,18 @@ import {
   SafeAreaView,
   Image,
   Dimensions,
+  Button,
 } from "react-native";
 
 import SelectMediaTile from "@/components/SelectMediaTile";
+import { router } from "expo-router";
+import { useMediaStore } from "@/stores/useMediaStore";
 
 const { width, height } = Dimensions.get("window");
 
 export default function CreateScreen() {
+  const { resetMediaFiles } = useMediaStore();
+
   return (
     <SafeAreaView style={styles.container}>
       <Image
@@ -29,6 +34,7 @@ export default function CreateScreen() {
         </Text>
         <SelectMediaTile type="gallery" />
         <SelectMediaTile type="camera" />
+        <Button title="Reset media" onPress={() => resetMediaFiles()} />
       </View>
     </SafeAreaView>
   );

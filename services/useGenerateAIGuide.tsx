@@ -46,18 +46,26 @@ export const useGenerateAIGuide = () => {
     try {
       setStatus({ status: "analyzing" });
       console.log("HERE IS THE USERS CURRENT LOCATION: ", latitude, longitude);
+
+      const promptWithCoordinates = IMAGE_ANALYSIS_PROMPT.replace(
+        "{latitude}",
+        latitude.toString()
+      ).replace("{longitude}", longitude.toString());
+
       const imageAnalysis = await analyzeImage(imageUrl, {
-        prompt: IMAGE_ANALYSIS_PROMPT,
+        prompt: promptWithCoordinates,
         temperature: 0.7,
         responseSchema: locationAnalysisSchema,
       });
+
+      console.log("Image Analysis Result:", imageAnalysis);
 
       setStatus({ status: "generating" });
       const guideContent = await generateChatCompletion(
         [
           {
             role: "user",
-            content: `Location Analysis: ${JSON.stringify(imageAnalysis)}
+            content: `Location Analysis: ${imageAnalysis}
             User's Current Coordinates: ${latitude}, ${longitude}
             
             Please create a detailed audio guide that:
@@ -70,7 +78,7 @@ export const useGenerateAIGuide = () => {
         ],
         {
           systemPrompt: AUDIOGUIDE_PROMPT,
-          temperature: 0.7,
+          temperature: 1.2,
           max_tokens: 2000,
           responseSchema: guideResponseSchema,
         }
@@ -90,6 +98,7 @@ export const useGenerateAIGuide = () => {
       });
 
       if (!guide?.id) {
+        setStatus({ status: "error", error: "Failed to create guide" });
         throw new Error("Failed to create guide");
       }
 

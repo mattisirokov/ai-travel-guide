@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { parseGuideData } from "@/utils/parseGuideData";
 
 import {
   StyleSheet,
@@ -6,197 +7,143 @@ import {
   ScrollView,
   View,
   TouchableOpacity,
-  Text,
   Image,
+  RefreshControl,
 } from "react-native";
 
-const feed = [
-  {
-    img: "https://plus.unsplash.com/premium_photo-1661281316103-9aef5ad47c50?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80",
-    title: "New Study Finds Link Between Exercise and Brain Function",
-    author: "S. Lee",
-    authorImg:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80",
-    tag: "health",
-    date: "Mar 24, 2023",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1519558260268-cde7e03a0152?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80",
-    title: "Tech Giant Announces New Line of Smart Home Devices",
-    author: "J. Smith",
-    authorImg:
-      "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80",
-    tag: "technology",
-    date: "Mar 23, 2023",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1605367177286-f3d4789c47a0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2342&q=80",
-    title: "City Council Approves Plan to Expand Public Transportation",
-    author: "E. Chen",
-    authorImg:
-      "https://images.unsplash.com/photo-1515621061946-eff1c2a352bd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1389&q=80",
-    tag: "politics",
-    date: "Mar 22, 2023",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1565615833231-e8c91a38a012?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80",
-    title: "Researchers Discover Potential Treatment for Alzheimer's",
-    author: "S. Lee",
-    authorImg:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80",
-    tag: "health",
-    date: "Mar 21, 2023",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1593941707874-ef25b8b4a92b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2344&q=80",
-    title: "New Startup Aims to Revolutionize Electric Car Market",
-    author: "J. Smith",
-    authorImg:
-      "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80",
-    tag: "technology",
-    date: "Mar 20, 2023",
-  },
-  {
-    img: "https://plus.unsplash.com/premium_photo-1663050986883-a5bdd99a7fa5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2362&q=80",
-    title: "Local Election Results Are In: Democrats Retain Majority",
-    author: "E. Chen",
-    authorImg:
-      "https://images.unsplash.com/photo-1515621061946-eff1c2a352bd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1389&q=80",
-    tag: "politics",
-    date: "Mar 19, 2023",
-  },
-];
+import { Text } from "../Themed";
+
+import { router } from "expo-router";
+import useGuideStore from "@/stores/useGuideStore";
+import { useSyncUserGuides } from "@/stores/useSyncUserGuides";
 
 export default function ContentFeed() {
+  const { guides, loadingStatus, error } = useGuideStore();
+  const [refreshing, setRefreshing] = useState(false);
+  const syncGuides = useSyncUserGuides();
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await syncGuides();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [syncGuides]);
+
+  if (!guides || guides.length === 0) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff", width: "100%" }}>
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyStateText}>No guides yet</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const parsedGuides = guides.map((guide) => parseGuideData(guide as any));
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff", width: "100%" }}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <View style={{ flex: 1, width: "100%" }}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View style={styles.featured}>
           <TouchableOpacity
             onPress={() => {
-              // handle onPress
+              router.push({
+                pathname: "/guide",
+                params: { guideId: parsedGuides[0].id },
+              });
             }}
             style={styles.featuredCard}
           >
             <View style={styles.featuredCardTag}>
-              <Text style={styles.featuredCardTagText}>{feed[0].tag}</Text>
+              <Text style={styles.featuredCardTagText}>Featured</Text>
             </View>
 
             <Image
-              alt=""
+              alt={parsedGuides[0].content.title}
               resizeMode="cover"
-              source={{ uri: feed[0].img }}
+              source={{ uri: parsedGuides[0].image_url }}
               style={styles.featuredCardImg}
             />
 
             <View style={styles.featuredCardRow}>
               <View style={styles.featuredCardRowItem}>
-                <Image
-                  alt=""
-                  source={{ uri: feed[0].authorImg }}
-                  style={styles.featuredCardRowItemImg}
-                />
-
                 <Text style={styles.featuredCardRowItemText}>
-                  {feed[0].author}
-                </Text>
-              </View>
-
-              <View style={styles.featuredCardRowDivider}>
-                <Text style={styles.featuredCardRowDividerText}>·</Text>
-              </View>
-
-              <View style={styles.featuredCardRowItem}>
-                <Text style={styles.featuredCardRowItemText}>
-                  {feed[0].date}
+                  {new Date(parsedGuides[0].created_at).toLocaleDateString()}
                 </Text>
               </View>
             </View>
 
             <View style={styles.featuredCardTitle}>
-              <Text style={styles.featuredCardTitleText}>{feed[0].title}</Text>
+              <Text style={styles.featuredCardTitleText}>
+                {parsedGuides[0].content.title}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
 
         {/* @ts-ignore */}
         <View style={styles.list}>
-          {feed
-            .slice(1)
-            .map(({ img, title, author, authorImg, tag, date }, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  // handle onPress
-                }}
-                style={styles.listCard}
-              >
-                <View style={styles.listCardContent}>
-                  <View style={styles.listCardTag}>
-                    <Text style={styles.listCardTagText}>{tag}</Text>
-                  </View>
-
-                  <View style={styles.listCardTitle}>
-                    <Text style={styles.listCardTitleText}>{title}</Text>
-                  </View>
-
-                  <View style={styles.listCardRow}>
-                    <View style={styles.listCardRowItem}>
-                      <Image
-                        alt=""
-                        source={{ uri: authorImg }}
-                        style={styles.listCardRowItemImg}
-                      />
-
-                      <Text style={styles.listCardRowItemText}>{author}</Text>
-                    </View>
-
-                    <View style={styles.listCardRowDivider}>
-                      <Text style={styles.listCardRowDividerText}>·</Text>
-                    </View>
-
-                    <View style={styles.listCardRowItem}>
-                      <Text style={styles.listCardRowItemText}>{date}</Text>
-                    </View>
-                  </View>
+          {parsedGuides.slice(1).map((guide) => (
+            <TouchableOpacity
+              key={guide.id}
+              onPress={() => {
+                router.push({
+                  pathname: "/guide",
+                  params: { guideId: guide.id },
+                });
+              }}
+              style={styles.listCard}
+            >
+              <View style={styles.listCardContent}>
+                <View style={styles.listCardTitle}>
+                  <Text style={styles.listCardTitleText}>
+                    {guide.content.title}
+                  </Text>
                 </View>
 
-                <Image
-                  alt=""
-                  resizeMode="cover"
-                  source={{ uri: img }}
-                  style={styles.listCardImg}
-                />
-              </TouchableOpacity>
-            ))}
+                <View style={styles.listCardRow}>
+                  <View style={styles.listCardRowItem}>
+                    <Text style={styles.listCardRowItemText}>
+                      {new Date(guide.created_at).toLocaleDateString()}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+
+              <Image
+                alt={guide.content.title}
+                resizeMode="cover"
+                source={{ uri: guide.image_url }}
+                style={styles.listCardImg}
+              />
+            </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   content: {
     paddingVertical: 8,
-  },
-  /** Header */
-  header: {
     paddingHorizontal: 16,
-    marginBottom: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
   },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: "700",
-    color: "#1d1d1d",
-  },
-  headerAction: {
-    width: 40,
-    height: 40,
-    alignItems: "center",
+  emptyState: {
+    flex: 1,
     justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: "#939393",
   },
   /** Featured */
   featured: {
@@ -241,22 +188,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  featuredCardRowItemImg: {
-    width: 24,
-    height: 24,
-    borderRadius: 9999,
-    marginRight: 8,
-  },
   featuredCardRowItemText: {
     fontSize: 14,
-    color: "#939393",
-  },
-  featuredCardRowDivider: {
-    marginHorizontal: 8,
-  },
-  featuredCardRowDividerText: {
-    fontSize: 15,
-    fontWeight: "bold",
     color: "#939393",
   },
   featuredCardTitle: {
@@ -272,7 +205,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "stretch",
     borderRadius: 12,
-    marginBottom: 10,
+    marginBottom: 16,
     backgroundColor: "#fff",
     paddingTop: 8,
     paddingBottom: 14,
@@ -284,15 +217,6 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     flexBasis: 0,
     marginRight: 12,
-  },
-  listCardTag: {
-    marginBottom: 8,
-  },
-  listCardTagText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#939393",
-    textTransform: "capitalize",
   },
   listCardTitle: {
     marginBottom: 8,
@@ -311,22 +235,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  listCardRowItemImg: {
-    width: 20,
-    height: 20,
-    borderRadius: 9999,
-    marginRight: 6,
-  },
   listCardRowItemText: {
     fontSize: 12,
-    color: "#939393",
-  },
-  listCardRowDivider: {
-    marginHorizontal: 6,
-  },
-  listCardRowDividerText: {
-    fontSize: 13,
-    fontWeight: "bold",
     color: "#939393",
   },
   listCardImg: {
@@ -336,5 +246,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e0e0e0",
     borderStyle: "solid",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+  },
+  headerAction: {
+    padding: 8,
   },
 });
