@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useSyncUserGuides } from "@/stores/useSyncUserGuides";
+import useGuideStore from "@/stores/useGuideStore";
 import { useColorScheme } from "@/components/useColorScheme";
 
 export {
@@ -35,15 +35,23 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
-  const { session, initialize } = useAuthStore();
-  // useSyncUserGuides();
+  const { session, initialize: initializeAuth } = useAuthStore();
+  const { initialize: initializeGuides } = useGuideStore();
 
   // Initialize auth store
   useEffect(() => {
-    initialize();
+    initializeAuth();
   }, []);
 
+  // Initialize guides when session is available
+  useEffect(() => {
+    if (session?.user) {
+      initializeGuides(session.user.id);
+    }
+  }, [session]);
+
   // Handle navigation after fonts are loaded
+
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();

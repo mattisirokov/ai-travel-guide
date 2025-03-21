@@ -15,21 +15,10 @@ import { Text } from "../Themed";
 
 import { router } from "expo-router";
 import useGuideStore from "@/stores/useGuideStore";
-import { useSyncUserGuides } from "@/stores/useSyncUserGuides";
 
 export default function ContentFeed() {
   const { guides, loadingStatus, error } = useGuideStore();
   const [refreshing, setRefreshing] = useState(false);
-  const syncGuides = useSyncUserGuides();
-
-  const onRefresh = React.useCallback(async () => {
-    setRefreshing(true);
-    try {
-      await syncGuides();
-    } finally {
-      setRefreshing(false);
-    }
-  }, [syncGuides]);
 
   if (!guides || guides.length === 0) {
     return (
@@ -48,7 +37,10 @@ export default function ContentFeed() {
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => console.log("refreshing")}
+          />
         }
       >
         <View style={styles.featured}>
