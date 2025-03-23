@@ -12,13 +12,20 @@ export type AuthContext = {
 
 export type LoadingStatus = "idle" | "fetching" | "complete" | "error";
 
+export type GenerationStatus =
+  | "idle"
+  | "analyzing"
+  | "generating"
+  | "complete"
+  | "error";
+
+export type UploadStatus = "idle" | "uploading" | "success" | "error";
+
 export interface UserProfile {
   user_id: string;
   first_name: string;
   last_name: string;
 }
-
-export type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 export interface UploadProgress {
   status: UploadStatus;

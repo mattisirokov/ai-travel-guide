@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { Guide, LoadingStatus } from "@/types";
 import { getUsersGuides } from "@/services/supabaseService";
-import { supabase } from "@/config/supabase";
 
 interface GuideStore {
   loadingStatus: LoadingStatus;
@@ -25,7 +24,6 @@ const useGuideStore = create<GuideStore>((set) => ({
       set({ loadingStatus: "fetching", error: null });
       const guides = await getUsersGuides(userId);
       set({ guides, loadingStatus: "complete" });
-      console.log("Guides synced successfully:", guides.length);
     } catch (error) {
       console.error("Failed to sync guides:", error);
       set({

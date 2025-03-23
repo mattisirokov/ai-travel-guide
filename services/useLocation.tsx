@@ -1,26 +1,41 @@
 import * as Location from "expo-location";
 
-import { useUserLocationStore } from "@/stores/useUserLocationStore";
+import { useState } from "react";
 
 export const useLocation = () => {
-  const { setLocation, setError } = useUserLocationStore();
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [error, setError] = useState<string | null>(null);
 
   const getUserLocation = async () => {
-    let locationPermission = await Location.requestForegroundPermissionsAsync();
+    try {
+      setStatus("loading");
+      let locationPermission =
+        await Location.requestForegroundPermissionsAsync();
 
-    if (!locationPermission) {
-      setError("Location permission not granted");
-      return;
-    }
+      if (!locationPermission) {
+        setError("Location permission not granted");
+        setStatus("error");
+        return null;
+      }
 
-    if (locationPermission.status === "granted") {
-      let location = await Location.getCurrentPositionAsync();
-      setLocation(location.coords.longitude, location.coords.latitude);
-    } else {
-      setError("Loca  tion permission not granted");
-      return;
+      if (locationPermission.status === "granted") {
+        let location = await Location.getCurrentPositionAsync();
+        setStatus("idle");
+        return {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        };
+      } else {
+        setError("Location permission not granted");
+        setStatus("error");
+        return null;
+      }
+    } catch (error) {
+      setError("Error getting location");
+      setStatus("error");
+      return null;
     }
   };
 
-  return { getUserLocation };
+  return { getUserLocation, status, error };
 };

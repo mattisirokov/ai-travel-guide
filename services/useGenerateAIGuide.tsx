@@ -1,126 +1,84 @@
-import { useState } from "react";
-
-import { useImageAnalysis } from "./useImageAnalysis";
-import { useChatCompletion } from "./useChatCompletion";
-import { useAuthStore } from "@/stores/useAuthStore";
-
-import { saveGuideToDatabase } from "./supabaseService";
-
-import { IMAGE_ANALYSIS_PROMPT } from "@/constants/prompts/imageAnalsysisPromt";
-import { AUDIOGUIDE_PROMPT } from "@/constants/prompts/audioguidePrompt";
-
-import { guideResponseSchema } from "@/constants/schemas/guideResponseSchema";
-import { locationAnalysisSchema } from "@/constants/schemas/locationAnalysisSchema";
-
-import { ContentStructure } from "@/types";
-
-interface GenerateGuideParams {
-  imageUrl: string;
-  latitude: number;
-  longitude: number;
-}
-
-interface GuideGenerationStatus {
-  status: "idle" | "analyzing" | "generating" | "saving" | "complete" | "error";
-  error?: string;
-  guideId?: string;
-}
+import { useLocation } from "./useLocation";
+import { useMediaStore } from "@/stores/useMediaStore";
+import { useGuideGenerationStore } from "@/stores/useGuideGenerationStore";
+import { useGetNearbyPointsOfInterest } from "./useGetNearbyPointsOfInterest";
 
 export const useGenerateAIGuide = () => {
-  const { userProfile } = useAuthStore();
+  const {
+    locationAnalysisStatus,
+    userLocation,
+    setUserLocation,
+    setLocationAnalyisResults,
+    setLocationAnalysisStatus,
+  } = useGuideGenerationStore();
 
-  const { analyzeImage, isAnalyzing: isImageAnalyzing } = useImageAnalysis();
+  const {
+    getUserLocation,
+    status: userLocationStatus,
+    error: locationError,
+  } = useLocation();
 
-  const { generateChatCompletion, isGenerating: isGuideGenerating } =
-    useChatCompletion();
+  const nearbyPlacesService = useGetNearbyPointsOfInterest(
+    userLocation || null
+  );
 
-  const [status, setStatus] = useState<GuideGenerationStatus>({
-    status: "idle",
-  });
+  const { media } = useMediaStore();
 
-  const generateGuide = async ({
-    imageUrl,
-    latitude,
-    longitude,
-  }: GenerateGuideParams) => {
+  const generateGuide = async () => {
     try {
-      setStatus({ status: "analyzing" });
-      console.log("HERE IS THE USERS CURRENT LOCATION: ", latitude, longitude);
+      // Step 1: Get user location
 
-      const promptWithCoordinates = IMAGE_ANALYSIS_PROMPT.replace(
-        "{latitude}",
-        latitude.toString()
-      ).replace("{longitude}", longitude.toString());
+      const location = await getUserLocation();
 
-      const imageAnalysis = await analyzeImage(imageUrl, {
-        prompt: promptWithCoordinates,
-        temperature: 0.7,
-        responseSchema: locationAnalysisSchema,
-      });
+      if (!location) {
+        throw new Error("No location data available");
+      }
 
-      console.log("Image Analysis Result:", imageAnalysis);
+      console.log("USERS LOCATION: ", location);
 
-      setStatus({ status: "generating" });
-      const guideContent = await generateChatCompletion(
-        [
-          {
-            role: "user",
-            content: `Location Analysis: ${imageAnalysis}
-            User's Current Coordinates: ${latitude}, ${longitude}
-            
-            Please create a detailed audio guide that:
-            1. Accurately describes the location based on the image analysis
-            2. Incorporates the specific coordinates to provide relevant historical and cultural context
-            3. References the visible architectural features and their significance
-            4. Includes interesting stories and anecdotes about the location
-            5. Connects the past to the present day`,
-          },
-        ],
-        {
-          systemPrompt: AUDIOGUIDE_PROMPT,
-          temperature: 1.2,
-          max_tokens: 2000,
-          responseSchema: guideResponseSchema,
+      if (userLocationStatus === "error" || locationError) {
+        throw new Error(locationError || "Failed to get user location");
+      }
+
+      // Step 2: Get nearby points of interest using the location we just got
+
+      setLocationAnalysisStatus("fetching");
+
+      try {
+        const nearbyPlaces = await nearbyPlacesService.fetchNearbyPlaces(
+          location
+        );
+
+        if (!nearbyPlaces || nearbyPlaces.length === 0) {
+          console.log("No nearby places found");
+          setLocationAnalyisResults([]);
+        } else {
+          setLocationAnalyisResults(nearbyPlaces);
         }
-      );
 
-      setStatus({ status: "saving" });
-      if (!userProfile?.user_id) {
-        throw new Error("User not authenticated");
+        setLocationAnalysisStatus("complete");
+        console.log("NEARBY PLACES: ", nearbyPlaces);
+      } catch (error) {
+        console.error("Nearby places error:", error);
+        setLocationAnalysisStatus("error");
+        setLocationAnalyisResults([]);
+        throw new Error("Failed to get nearby points of interest");
       }
-
-      const guide = await saveGuideToDatabase({
-        content: guideContent as unknown as ContentStructure,
-        user_id: userProfile.user_id,
-        image_url: imageUrl,
-        latitude: latitude,
-        longitude: longitude,
-      });
-
-      if (!guide?.id) {
-        setStatus({ status: "error", error: "Failed to create guide" });
-        throw new Error("Failed to create guide");
-      }
-
-      setStatus({ status: "complete", guideId: guide.id });
-      return guide.id;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to generate guide";
-      setStatus({ status: "error", error: errorMessage });
-      throw error;
+      throw new Error(errorMessage);
     }
-  };
-
-  const reset = () => {
-    setStatus({ status: "idle" });
   };
 
   return {
     generateGuide,
-    status,
-    isProcessing:
-      isImageAnalyzing || isGuideGenerating || status.status === "saving",
-    reset,
+    isProcessingLocation:
+      userLocationStatus === "loading" || locationAnalysisStatus === "fetching",
+    locationError:
+      locationError ||
+      (locationAnalysisStatus === "error"
+        ? "Failed to analyze location"
+        : null),
   };
 };

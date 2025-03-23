@@ -17,8 +17,8 @@ export const useFileUpload = () => {
 
     try {
       setUploadStatus({ status: "uploading" });
+      console.log("Uploading file...");
 
-      // Get file info to determine extension
       const fileInfo = await FileSystem.getInfoAsync(fileUri);
       if (!fileInfo.exists) {
         throw new Error("File does not exist");
@@ -26,7 +26,6 @@ export const useFileUpload = () => {
 
       const fileExtension = fileUri.split(".").pop()?.toLowerCase() || "jpg";
 
-      // Validate file type
       const validExtensions = ["jpg", "jpeg", "png", "gif"];
       if (!validExtensions.includes(fileExtension)) {
         throw new Error(
@@ -37,12 +36,12 @@ export const useFileUpload = () => {
       const timestamp = new Date().getTime();
       const filename = `${userProfile.user_id}-${timestamp}.${fileExtension}`;
 
-      // Read the file as base64
       const base64 = await FileSystem.readAsStringAsync(fileUri, {
         encoding: FileSystem.EncodingType.Base64,
       });
 
-      // For Supabase storage, we can directly use the base64 string
+      console.log("File read successfully");
+
       const { data, error } = await supabase.storage
         .from("locations")
         .upload(filename, decode(base64), {
@@ -53,15 +52,16 @@ export const useFileUpload = () => {
 
       if (error) {
         setUploadStatus({ status: "error", error: error.message });
+        console.error("Error uploading file:", error);
         throw error;
       }
 
-      // Get the public URL for the uploaded file
       const {
         data: { publicUrl },
       } = supabase.storage.from("locations").getPublicUrl(filename);
 
       setUploadStatus({ status: "success" });
+      console.log("Uploaded file:", publicUrl);
 
       return {
         path: data.path,
@@ -72,6 +72,7 @@ export const useFileUpload = () => {
         status: "error",
         error: error instanceof Error ? error.message : "Upload failed",
       });
+      console.error("Error uploading file:", error);
       throw error;
     }
   };

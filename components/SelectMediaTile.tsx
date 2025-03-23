@@ -6,7 +6,6 @@ import { useOpenCamera } from "@/media/hooks/useOpenCamera";
 import { useSelectMediaFromLibrary } from "@/media/hooks/useSelectMediaFromLibrary";
 import { useFileUpload } from "@/media/hooks/useFileUpload";
 import { useMediaStore } from "@/stores/useMediaStore";
-import { useLocation } from "@/services/useLocation";
 
 import Colors from "@/constants/Colors";
 
@@ -16,15 +15,18 @@ interface SelectMediaTileProps {
 
 export default function SelectMediaTile({ type }: SelectMediaTileProps) {
   const { uploadFile } = useFileUpload();
-  const { getUserLocation } = useLocation();
-  const { addMedia, setUploadStatus } = useMediaStore();
+  const { addMedia, setUploadStatus, uploadStatus, media } = useMediaStore();
 
   const handleMediaSelect = async (fileUri: string) => {
     try {
       const uploadResult = await uploadFile(fileUri);
       addMedia(uploadResult.url);
-      router.push("/loadingGuide");
+      setUploadStatus({
+        status: "success",
+      });
+      router.push("/generateGuide");
     } catch (error) {
+      console.error("Error uploading image:", error);
       setUploadStatus({
         status: "error",
         error:
@@ -39,8 +41,6 @@ export default function SelectMediaTile({ type }: SelectMediaTileProps) {
   const { openCamera } = useOpenCamera(handleMediaSelect);
 
   const onSelect = () => {
-    getUserLocation();
-
     if (type === "gallery") {
       selectImageFromGallery();
     } else {
@@ -52,7 +52,13 @@ export default function SelectMediaTile({ type }: SelectMediaTileProps) {
     <TouchableOpacity onPress={onSelect}>
       <View style={styles.button}>
         <Text style={styles.buttonText}>
-          {type === "gallery" ? "Select image from gallery" : "Open camera"}
+          {uploadStatus.status === "uploading"
+            ? "Uploading..."
+            : uploadStatus.status === "error"
+            ? "Error: " + uploadStatus.error
+            : type === "gallery"
+            ? "Select from Gallery"
+            : "Take a Photo"}
         </Text>
       </View>
     </TouchableOpacity>
