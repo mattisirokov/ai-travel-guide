@@ -13,6 +13,11 @@ interface AuthStore {
   fetchUserData: (userId: string) => Promise<UserProfile | null>;
   getSingleUserProfile: (userId: string) => Promise<UserProfile | null>;
   signIn: (email: string, password: string) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    userData: { first_name: string; last_name: string }
+  ) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -118,6 +123,32 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     });
 
     if (error) throw error;
+  },
+
+  signUp: async (
+    email: string,
+    password: string,
+    userData: { first_name: string; last_name: string }
+  ): Promise<void> => {
+    // First, create the auth user
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (authError) throw authError;
+    if (!authData.user) throw new Error("Failed to create user");
+
+    // Then, create the user profile in the Users table
+    const { error: profileError } = await supabase.from("Users").insert([
+      {
+        user_id: authData.user.id,
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+      },
+    ]);
+
+    if (profileError) throw profileError;
   },
 
   signOut: async (): Promise<void> => {
