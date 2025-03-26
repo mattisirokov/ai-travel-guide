@@ -13,6 +13,7 @@ import FeatherIcon from "@expo/vector-icons/Feather";
 import { router, useLocalSearchParams } from "expo-router";
 import { getGuide } from "@/services/supabaseService";
 import { Guide, ContentStructure } from "@/types";
+import LocationMap from "@/components/LocationMap";
 
 export default function GuideScreen() {
   const { guideId } = useLocalSearchParams();
@@ -46,7 +47,7 @@ export default function GuideScreen() {
   }, []);
 
   const handleBackPress = () => {
-    router.push("/");
+    router.push("/(tabs)");
   };
 
   if (loading) {
@@ -66,102 +67,53 @@ export default function GuideScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#F4EFF3" }}>
-      <StatusBar barStyle="light-content" />
-      <SafeAreaView style={styles.header}>
-        <TouchableOpacity onPress={handleBackPress} style={styles.headerAction}>
-          <FeatherIcon color="#1d1d1d" name="arrow-left" size={24} />
-        </TouchableOpacity>
-      </SafeAreaView>
-
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Image
-          alt={parsedContent.title || "Guide Image"}
-          source={{
-            uri: guide.image_url,
-          }}
-          style={styles.hero}
-        />
-
-        <View style={styles.section}>
-          <Text style={styles.title}>
-            {parsedContent.title || "Untitled Guide"}
-          </Text>
-          <Text style={styles.introduction}>
-            {parsedContent.introduction || "No introduction available."}
-          </Text>
+        {/* Hero Section */}
+        <View style={styles.heroContainer}>
+          <Image source={{ uri: guide?.image_url }} style={styles.heroImage} />
+          <View style={styles.heroOverlay}>
+            <TouchableOpacity
+              onPress={handleBackPress}
+              style={styles.backButton}
+            >
+              <FeatherIcon color="#fff" name="chevron-left" size={28} />
+            </TouchableOpacity>
+            <View style={styles.locationInfo}>
+              <Text style={styles.locationTitle}>{parsedContent?.title}</Text>
+              <View style={styles.coordinatesContainer}>
+                <FeatherIcon
+                  color="#fff"
+                  name="map-pin"
+                  size={16}
+                  style={styles.coordinatesIcon}
+                />
+                <Text style={styles.locationSubtitle}>
+                  {Number(guide.latitude).toFixed(3)}°,{" "}
+                  {Number(guide.longitude).toFixed(3)}°
+                </Text>
+              </View>
+            </View>
+          </View>
         </View>
 
+        {/* Map Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Historical Context</Text>
-          <Text style={styles.sectionText}>
-            {parsedContent.historicalContext ||
-              "No historical context available."}
-          </Text>
+          <Text style={styles.sectionTitle}>Map Location</Text>
+          <LocationMap
+            latitude={Number(guide.latitude)}
+            longitude={Number(guide.longitude)}
+            title={guide.content.title}
+          />
         </View>
 
+        {/* Description Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Architectural Details</Text>
-          <Text style={styles.sectionText}>
-            {parsedContent.architecturalDetails ||
-              "No architectural details available."}
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Cultural Significance</Text>
-          <Text style={styles.sectionText}>
-            {parsedContent.culturalSignificance ||
-              "No cultural significance information available."}
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Notable Features</Text>
-          {parsedContent.notableFeatures &&
-          parsedContent.notableFeatures.length > 0 ? (
-            parsedContent.notableFeatures.map((feature, index) => (
-              <Text key={index} style={styles.listItem}>
-                • {feature}
-              </Text>
-            ))
-          ) : (
-            <Text style={styles.listItem}>No notable features listed.</Text>
-          )}
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Interesting Stories</Text>
-          {parsedContent.interestingStories &&
-          parsedContent.interestingStories.length > 0 ? (
-            parsedContent.interestingStories.map((story, index) => (
-              <Text key={index} style={styles.listItem}>
-                • {story}
-              </Text>
-            ))
-          ) : (
-            <Text style={styles.listItem}>
-              No interesting stories available.
-            </Text>
-          )}
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Modern Context</Text>
-          <Text style={styles.sectionText}>
-            {parsedContent.modernContext ||
-              "No modern context information available."}
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Conclusion</Text>
-          <Text style={styles.sectionText}>
-            {parsedContent.conclusion || "No conclusion available."}
-          </Text>
+          <Text style={styles.sectionTitle}>Description</Text>
+          <Text style={styles.description}>{parsedContent?.conclusion}</Text>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -177,67 +129,96 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   content: {
-    paddingBottom: 120,
+    paddingBottom: 40,
   },
-  hero: {
-    width: "100%",
-    height: 220,
-  },
-  header: {
-    flexDirection: "row",
+  heroContainer: {
+    position: "relative",
+    height: 350,
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 12,
+    justifyContent: "center",
+    borderRadius: 30,
+    overflow: "hidden",
+    marginHorizontal: 16,
+    marginTop: 16,
+  },
+  heroImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+    alignSelf: "center",
+  },
+  heroOverlay: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 9999,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.3)",
   },
-  headerAction: {
-    width: 40,
-    height: 40,
+  backButton: {
+    width: 50,
+    height: 50,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 9999,
-    backgroundColor: "#fff",
-    marginHorizontal: 12,
+    marginLeft: 12,
+    marginTop: 12,
+    backgroundColor: "rgba(255,255,255,0.3)",
+    borderRadius: 12,
   },
   section: {
+    padding: 20,
     backgroundColor: "#fff",
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: "#e7e7e7",
-    marginBottom: 12,
-  },
-  title: {
-    fontSize: 27,
-    fontWeight: "700",
-    color: "#1d1d1d",
-    marginBottom: 12,
-  },
-  introduction: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: "#494949",
+    marginBottom: 8,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 16,
+    fontFamily: "Poppins",
     fontWeight: "600",
-    color: "#1d1d1d",
+    color: "#000",
     marginBottom: 12,
+    textTransform: "uppercase",
   },
-  sectionText: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: "#494949",
+  description: {
+    fontSize: 15,
+    fontFamily: "Poppins",
+    lineHeight: 22,
+    color: "#333",
+    fontWeight: "400",
   },
-  listItem: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: "#494949",
+  locationInfo: {
+    position: "absolute",
+    bottom: 32,
+    left: 24,
+    backgroundColor: "transparent",
+  },
+  locationTitle: {
+    fontSize: 30,
+    fontFamily: "Poppins",
+    fontWeight: "800",
     marginBottom: 8,
+    color: "#fff",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  coordinatesContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "transparent",
+  },
+  coordinatesIcon: {
+    marginRight: 6,
+  },
+  locationSubtitle: {
+    fontSize: 16,
+    fontFamily: "Poppins",
+    color: "#fff",
+    opacity: 0.9,
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
 });
