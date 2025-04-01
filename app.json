@@ -63,7 +63,8 @@
           "cameraPermission": "Allow us to open the camera.",
           "microphonePermission": "Allow us to record audio."
         }
-      ]
+      ],
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+
 import {
   StyleSheet,
-  StatusBar,
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
@@ -13,7 +13,9 @@ import FeatherIcon from "@expo/vector-icons/Feather";
 import { router, useLocalSearchParams } from "expo-router";
 import { getGuide } from "@/services/supabaseService";
 import { Guide, ContentStructure } from "@/types";
-import LocationMap from "@/components/LocationMap";
+
+import { AudioPlayer } from "@/components/uikit";
+import { LocationMap } from "@/components";
 
 export default function GuideScreen() {
   const { guideId } = useLocalSearchParams();
@@ -100,11 +102,17 @@ export default function GuideScreen() {
         {/* Map Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Map Location</Text>
-          <LocationMap
-            latitude={Number(guide.latitude)}
-            longitude={Number(guide.longitude)}
-            title={guide.content.title}
-          />
+          <Text>
+            Map is coming soon, some package issues with expo
+            {Number(guide.latitude).toFixed(3)}°,{" "}
+            {Number(guide.longitude).toFixed(3)}°
+          </Text>
+        </View>
+
+        {/* Audio Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Audio</Text>
+          <AudioPlayer />
         </View>
 
         {/* Description Section */}

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -16,7 +16,8 @@ import {
   Alert,
 } from "react-native";
 
-import { Video, ResizeMode } from "expo-av";
+import { VideoView, useVideoPlayer } from "expo-video";
+import { useEvent } from "expo";
 
 import Colors from "../constants/Colors";
 import { useAuthStore } from "../stores/useAuthStore";
@@ -27,22 +28,31 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const signIn = useAuthStore((state) => state.signIn);
-  const videoRef = useRef<Video>(null);
 
-  const playVideo = async () => {
-    if (videoRef.current) {
-      await videoRef.current.playAsync();
+  const player = useVideoPlayer(
+    require("../assets/videos/Background.mp4"),
+    (player) => {
+      player.loop = true;
+      player.muted = true;
     }
-  };
+  );
+
+  const { status } = useEvent(player, "statusChange", {
+    status: player.status,
+  });
 
   useEffect(() => {
-    playVideo();
-  }, []);
+    if (status === "readyToPlay") {
+      player.play();
+    }
+  }, [status]);
 
   useFocusEffect(
     React.useCallback(() => {
-      playVideo();
-    }, [])
+      if (status === "readyToPlay") {
+        player.play();
+      }
+    }, [status])
   );
 
   const handleSignIn = async () => {
@@ -62,14 +72,10 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
-      <Video
-        ref={videoRef}
+      <VideoView
         style={styles.backgroundVideo}
-        source={require("../assets/videos/Background.mp4")}
-        resizeMode={ResizeMode.COVER}
-        isMuted
-        isLooping
-        shouldPlay={true}
+        player={player}
+        contentFit="cover"
       />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
@@ -161,7 +167,6 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    opacity: 0.65,
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
   },

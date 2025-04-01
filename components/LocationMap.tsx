@@ -1,34 +1,41 @@
-import React from "react";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
-export default function LocationMap({
-  latitude,
-  longitude,
-  title,
-}: {
+interface LocationMapProps {
   latitude: number;
   longitude: number;
-  title: string;
-}) {
+  title?: string;
+}
+
+export function LocationMap({ latitude, longitude, title }: LocationMapProps) {
   return (
-    <View style={styles.container}>
-      <MapView style={styles.map} provider={PROVIDER_GOOGLE} />
-    </View>
+    <MapView
+      style={styles.map}
+      provider={PROVIDER_GOOGLE}
+      initialRegion={{
+        latitude: Number(latitude),
+        longitude: Number(longitude),
+        latitudeDelta: 0.08,
+        longitudeDelta: 0.08,
+      }}
+    >
+      <Marker
+        identifier={`marker-${latitude}-${longitude}`}
+        coordinate={{
+          latitude: Number(latitude),
+          longitude: Number(longitude),
+        }}
+        title={title}
+      />
+    </MapView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "red",
-    height: 200,
-    borderRadius: 30,
-    overflow: "hidden",
-  },
   map: {
     width: "100%",
-    height: "100%",
+    height: 200,
+    borderRadius: 8,
+    overflow: "hidden",
   },
 });

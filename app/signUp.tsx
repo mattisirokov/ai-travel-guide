@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -16,8 +16,9 @@ import {
   Alert,
 } from "react-native";
 
-import { Video, ResizeMode } from "expo-av";
-import { router } from "expo-router";
+import { VideoView, useVideoPlayer } from "expo-video";
+import { useEvent } from "expo";
+import { router, useFocusEffect } from "expo-router";
 
 import Colors from "../constants/Colors";
 import { useAuthStore } from "../stores/useAuthStore";
@@ -31,17 +32,33 @@ export default function SignUpScreen() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const signUp = useAuthStore((state) => state.signUp);
-  const videoRef = useRef<Video>(null);
 
-  const playVideo = async () => {
-    if (videoRef.current) {
-      await videoRef.current.playAsync();
+  const player = useVideoPlayer(
+    require("../assets/videos/Background.mp4"),
+    (player) => {
+      player.loop = true;
+      player.muted = true;
     }
-  };
+  );
+
+  // Listen to status changes to ensure video plays when ready
+  const { status } = useEvent(player, "statusChange", {
+    status: player.status,
+  });
 
   useEffect(() => {
-    playVideo();
-  }, []);
+    if (status === "readyToPlay") {
+      player.play();
+    }
+  }, [status]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (status === "readyToPlay") {
+        player.play();
+      }
+    }, [status])
+  );
 
   const handleSignUp = async () => {
     setIsLoading(true);
@@ -63,14 +80,10 @@ export default function SignUpScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
-      <Video
-        ref={videoRef}
+      <VideoView
         style={styles.backgroundVideo}
-        source={require("../assets/videos/Background.mp4")}
-        resizeMode={ResizeMode.COVER}
-        isMuted
-        isLooping
-        shouldPlay={true}
+        player={player}
+        contentFit="cover"
       />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
