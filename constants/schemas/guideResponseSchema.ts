@@ -9,73 +9,13 @@ export const guideResponseSchema: ResponseFormatJSONSchema = {
     schema: {
       type: "object",
       properties: {
-        title: {
-          type: "string",
-          description: "The name of the location being described",
-        },
-        introduction: {
+        content: {
           type: "string",
           description:
-            "An engaging welcome that captures the essence of the location and sets the scene",
-        },
-        funFact: {
-          type: "string",
-          description:
-            "A historical fun fact about the location that is not obvious from the image. If there is no fun fact, return an empty string.",
-        },
-        historicalContext: {
-          type: "string",
-          description:
-            "The historical background and evolution of the location over time",
-        },
-        architecturalDetails: {
-          type: "string",
-          description:
-            "Detailed description of the architectural features and their significance",
-        },
-        culturalSignificance: {
-          type: "string",
-          description:
-            "The cultural importance and impact of this location on the community and history",
-        },
-        interestingStories: {
-          type: "array",
-          items: {
-            type: "string",
-          },
-          description:
-            "Collection of fascinating anecdotes and stories related to the location",
-        },
-        notableFeatures: {
-          type: "array",
-          items: {
-            type: "string",
-          },
-          description:
-            "Key features and points of interest that visitors should notice",
-        },
-        modernContext: {
-          type: "string",
-          description:
-            "How the location fits into the present day and its current significance",
-        },
-        conclusion: {
-          type: "string",
-          description:
-            "A memorable closing that ties together the key aspects of the location",
+            "A complete, engaging narrative about the location that includes its history, significance, and interesting features. The content should flow naturally and be suitable for an audio guide.",
         },
       },
-      required: [
-        "title",
-        "introduction",
-        "historicalContext",
-        "architecturalDetails",
-        "culturalSignificance",
-        "interestingStories",
-        "notableFeatures",
-        "modernContext",
-        "conclusion",
-      ],
+      required: ["content"],
     },
   },
 };

@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { parseGuideData } from "@/utils/parseGuideData";
-
 import {
   StyleSheet,
   SafeAreaView,
@@ -12,7 +10,6 @@ import {
 } from "react-native";
 
 import { Text } from "../Themed";
-
 import { router } from "expo-router";
 import useGuideStore from "@/stores/useGuideStore";
 
@@ -30,8 +27,6 @@ export default function ContentFeed() {
     );
   }
 
-  const parsedGuides = guides.map((guide) => parseGuideData(guide as any));
-
   return (
     <View style={{ flex: 1, width: "100%" }}>
       <ScrollView
@@ -48,7 +43,7 @@ export default function ContentFeed() {
             onPress={() => {
               router.push({
                 pathname: "/guide",
-                params: { guideId: parsedGuides[0].id },
+                params: { guideId: guides[0].id },
               });
             }}
             style={styles.featuredCard}
@@ -58,31 +53,28 @@ export default function ContentFeed() {
             </View>
 
             <Image
-              alt={parsedGuides[0].content.title}
+              alt="Featured Guide"
               resizeMode="cover"
-              source={{ uri: parsedGuides[0].image_url }}
+              source={{ uri: guides[0].image_url }}
               style={styles.featuredCardImg}
             />
 
             <View style={styles.featuredCardRow}>
               <View style={styles.featuredCardRowItem}>
                 <Text style={styles.featuredCardRowItemText}>
-                  {new Date(parsedGuides[0].created_at).toLocaleDateString()}
+                  {new Date(guides[0].created_at).toLocaleDateString()}
                 </Text>
               </View>
             </View>
 
             <View style={styles.featuredCardTitle}>
-              <Text style={styles.featuredCardTitleText}>
-                {parsedGuides[0].content.title}
-              </Text>
+              <Text style={styles.featuredCardTitleText}>Location Guide</Text>
             </View>
           </TouchableOpacity>
         </View>
 
-        {/* @ts-ignore */}
         <View style={styles.list}>
-          {parsedGuides.slice(1).map((guide) => (
+          {guides.slice(1).map((guide) => (
             <TouchableOpacity
               key={guide.id}
               onPress={() => {
@@ -95,9 +87,7 @@ export default function ContentFeed() {
             >
               <View style={styles.listCardContent}>
                 <View style={styles.listCardTitle}>
-                  <Text style={styles.listCardTitleText}>
-                    {guide.content.title}
-                  </Text>
+                  <Text style={styles.listCardTitleText}>Location Guide</Text>
                 </View>
 
                 <View style={styles.listCardRow}>
@@ -110,7 +100,7 @@ export default function ContentFeed() {
               </View>
 
               <Image
-                alt={guide.content.title}
+                alt="Guide Image"
                 resizeMode="cover"
                 source={{ uri: guide.image_url }}
                 style={styles.listCardImg}
@@ -137,7 +127,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#939393",
   },
-  /** Featured */
   featured: {
     marginBottom: 24,
   },
@@ -193,6 +182,9 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#000",
   },
+  list: {
+    marginTop: 16,
+  },
   listCard: {
     flexDirection: "row",
     alignItems: "stretch",
@@ -238,13 +230,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e0e0e0",
     borderStyle: "solid",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-  },
-  headerAction: {
-    padding: 8,
   },
 });

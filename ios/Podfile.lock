@@ -6,15 +6,19 @@ PODS:
   - EXImageLoader (5.0.0):
     - ExpoModulesCore
     - React-Core
-  - Expo (52.0.39):
+  - Expo (52.0.44):
     - ExpoModulesCore
-  - ExpoAsset (11.0.4):
+  - ExpoAsset (11.0.5):
     - ExpoModulesCore
-  - ExpoFileSystem (18.0.11):
+  - ExpoCamera (16.0.18):
+    - ExpoModulesCore
+    - ZXingObjC/OneD
+    - ZXingObjC/PDF417
+  - ExpoFileSystem (18.0.12):
     - ExpoModulesCore
   - ExpoFont (13.0.4):
     - ExpoModulesCore
-  - ExpoHead (4.0.18):
+  - ExpoHead (4.0.20):
     - ExpoModulesCore
   - ExpoImagePicker (16.0.6):
     - ExpoModulesCore
@@ -22,7 +26,7 @@ PODS:
     - ExpoModulesCore
   - ExpoLinking (7.0.5):
     - ExpoModulesCore
-  - ExpoLocation (18.0.8):
+  - ExpoLocation (18.0.10):
     - ExpoModulesCore
   - ExpoModulesCore (2.2.3):
     - DoubleConversion
@@ -49,18 +53,44 @@ PODS:
     - Yoga
   - ExpoSplashScreen (0.29.22):
     - ExpoModulesCore
-  - ExpoSystemUI (4.0.8):
+  - ExpoSystemUI (4.0.9):
+    - ExpoModulesCore
+  - ExpoVideo (2.0.6):
     - ExpoModulesCore
   - ExpoWebBrowser (14.0.2):
     - ExpoModulesCore
   - FBLazyVector (0.76.7)
   - fmt (9.1.0)
   - glog (0.3.5)
+  - Google-Maps-iOS-Utils (4.2.2):
+    - Google-Maps-iOS-Utils/Clustering (= 4.2.2)
+    - Google-Maps-iOS-Utils/Geometry (= 4.2.2)
+    - Google-Maps-iOS-Utils/GeometryUtils (= 4.2.2)
+    - Google-Maps-iOS-Utils/Heatmap (= 4.2.2)
+    - Google-Maps-iOS-Utils/QuadTree (= 4.2.2)
+    - GoogleMaps (~> 7.3)
+  - Google-Maps-iOS-Utils/Clustering (4.2.2):
+    - Google-Maps-iOS-Utils/QuadTree
+    - GoogleMaps (~> 7.3)
+  - Google-Maps-iOS-Utils/Geometry (4.2.2):
+    - GoogleMaps (~> 7.3)
+  - Google-Maps-iOS-Utils/GeometryUtils (4.2.2):
+    - GoogleMaps (~> 7.3)
+  - Google-Maps-iOS-Utils/Heatmap (4.2.2):
+    - Google-Maps-iOS-Utils/QuadTree
+    - GoogleMaps (~> 7.3)
+  - Google-Maps-iOS-Utils/QuadTree (4.2.2):
+    - GoogleMaps (~> 7.3)
+  - GoogleMaps (7.4.0):
+    - GoogleMaps/Maps (= 7.4.0)
+  - GoogleMaps/Base (7.4.0)
+  - GoogleMaps/Maps (7.4.0):
+    - GoogleMaps/Base
   - hermes-engine (0.76.7):
     - hermes-engine/Pre-built (= 0.76.7)
   - hermes-engine/Pre-built (0.76.7)
-  - PurchasesHybridCommon (13.25.0):
-    - RevenueCat (= 5.19.0)
+  - PurchasesHybridCommon (13.26.1):
+    - RevenueCat (= 5.20.2)
   - RCT-Folly (2024.01.01.00):
     - boost
     - DoubleConversion
@@ -1296,6 +1326,12 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-google-maps (1.18.0):
+    - Google-Maps-iOS-Utils (= 4.2.2)
+    - GoogleMaps (= 7.4.0)
+    - React-Core
+  - react-native-maps (1.18.0):
+    - React-Core
   - react-native-safe-area-context (4.12.0):
     - DoubleConversion
     - glog
@@ -1362,6 +1398,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-track-player (4.1.1):
+    - React-Core
+    - SwiftAudioEx (= 1.1.0)
   - React-nativeconfig (0.76.7)
   - React-NativeModulesApple (0.76.7):
     - glog
@@ -1629,7 +1668,7 @@ PODS:
     - React-logger (= 0.76.7)
     - React-perflogger (= 0.76.7)
     - React-utils (= 0.76.7)
-  - RevenueCat (5.19.0)
+  - RevenueCat (5.20.2)
   - RNCAsyncStorage (2.1.2):
     - DoubleConversion
     - glog
@@ -1651,8 +1690,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNPurchases (8.8.1):
-    - PurchasesHybridCommon (= 13.25.0)
+  - RNPurchases (8.9.3):
+    - PurchasesHybridCommon (= 13.26.1)
     - React-Core
   - RNReanimated (3.16.7):
     - DoubleConversion
@@ -1787,7 +1826,13 @@ PODS:
     - ReactCommon/turbomodule/core
     - Yoga
   - SocketRocket (0.7.1)
+  - SwiftAudioEx (1.1.0)
   - Yoga (0.0.0)
+  - ZXingObjC/Core (3.6.9)
+  - ZXingObjC/OneD (3.6.9):
+    - ZXingObjC/Core
+  - ZXingObjC/PDF417 (3.6.9):
+    - ZXingObjC/Core
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
@@ -1796,6 +1841,7 @@ DEPENDENCIES:
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
+  - ExpoCamera (from `../node_modules/expo-camera/ios`)
   - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
   - ExpoFont (from `../node_modules/expo-font/ios`)
   - ExpoHead (from `../node_modules/expo-router/ios`)
@@ -1806,6 +1852,7 @@ DEPENDENCIES:
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - ExpoSystemUI (from `../node_modules/expo-system-ui/ios`)
+  - ExpoVideo (from `../node_modules/expo-video/ios`)
   - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
@@ -1842,7 +1889,10 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - react-native-google-maps (from `/Users/mattisirokov/Develop/ai-travel-guide/node_modules/react-native-maps`)
+  - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-track-player (from `../node_modules/react-native-track-player`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -1878,9 +1928,13 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Google-Maps-iOS-Utils
+    - GoogleMaps
     - PurchasesHybridCommon
     - RevenueCat
     - SocketRocket
+    - SwiftAudioEx
+    - ZXingObjC
 
 EXTERNAL SOURCES:
   boost:
@@ -1895,6 +1949,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo"
   ExpoAsset:
     :path: "../node_modules/expo-asset/ios"
+  ExpoCamera:
+    :path: "../node_modules/expo-camera/ios"
   ExpoFileSystem:
     :path: "../node_modules/expo-file-system/ios"
   ExpoFont:
@@ -1915,6 +1971,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-splash-screen/ios"
   ExpoSystemUI:
     :path: "../node_modules/expo-system-ui/ios"
+  ExpoVideo:
+    :path: "../node_modules/expo-video/ios"
   ExpoWebBrowser:
     :path: "../node_modules/expo-web-browser/ios"
   FBLazyVector:
@@ -1984,8 +2042,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-google-maps:
+    :path: "/Users/mattisirokov/Develop/ai-travel-guide/node_modules/react-native-maps"
+  react-native-maps:
+    :path: "../node_modules/react-native-maps"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-track-player:
+    :path: "../node_modules/react-native-track-player"
   React-nativeconfig:
     :path: "../node_modules/react-native/ReactCommon"
   React-NativeModulesApple:
@@ -2056,24 +2120,28 @@ SPEC CHECKSUMS:
   DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
   EXConstants: a1f35b9aabbb3c6791f8e67722579b1ffcdd3f18
   EXImageLoader: 759063a65ab016b836f73972d3bb25404888713d
-  Expo: d01030025d6965c98bd968ea9b71ae5bb9727cb8
-  ExpoAsset: a4cbc27a7cd24a6e87eb719603790b2cfa8dd326
-  ExpoFileSystem: 4d2e7f77a41cfde8c3ae98580d872cd49437f993
+  Expo: 83a0ca93325155885341b6cfc988c9c711dd0048
+  ExpoAsset: 0687fe05f5d051c4a34dd1f9440bd00858413cfe
+  ExpoCamera: 173e000631122854b87c20310513981e89030bc6
+  ExpoFileSystem: c8c19bf80d914c83dda3beb8569d7fb603be0970
   ExpoFont: 773955186469acc5108ff569712a2d243857475f
-  ExpoHead: a01c5aa019a20f06c117266be321ea5278d40ea1
+  ExpoHead: 15cd0b1168451650dafe3983b99beea3befb3590
   ExpoImagePicker: 482b2a6198b365dd18b5a0cb6d4caeec880cb8e1
   ExpoKeepAwake: 2a5f15dd4964cba8002c9a36676319a3394c85c7
   ExpoLinking: 0381341519ca7180a3a057d20edb1cf6a908aaf4
-  ExpoLocation: 4ed6ca57c68d82ecfeff1b04ad2c5b8dfe976b81
+  ExpoLocation: ad29273f84077363296657176ea39c3545521720
   ExpoModulesCore: 0bcea8c26791a8f0aed1d4a961f1165e1fc657d4
   ExpoSplashScreen: 643666b96a84e8d97d55fac43926fb4183c692d9
-  ExpoSystemUI: ba4507df7d8d15f5e1694a3c7fc6bc3cca3803e5
+  ExpoSystemUI: fb8213e39d19e0861320fa69eb60cad7a839c080
+  ExpoVideo: 775d29cbaf4affbee0a449770a476ce4ab69ca8c
   ExpoWebBrowser: 6890a769e6c9d83da938dceb9a03e764afc3ec9c
   FBLazyVector: ca8044c9df513671c85167838b4188791b6f37e1
   fmt: 10c6e61f4be25dc963c36bd73fc7b1705fe975be
   glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
+  Google-Maps-iOS-Utils: f77eab4c4326d7e6a277f8e23a0232402731913a
+  GoogleMaps: 032f676450ba0779bd8ce16840690915f84e57ac
   hermes-engine: eb4a80f6bf578536c58a44198ec93a30f6e69218
-  PurchasesHybridCommon: f27e7fe57a9934319373b10c260db5d6c10bbb64
+  PurchasesHybridCommon: aeebb5b2a956514f8f3ebde2a1574e07d2164ae8
   RCT-Folly: bf5c0376ffe4dd2cf438dcf86db385df9fdce648
   RCTDeprecation: 7691283dd69fed46f6653d376de6fa83aaad774c
   RCTRequired: eac044a04629288f272ee6706e31f81f3a2b4bfe
@@ -2103,7 +2171,10 @@ SPEC CHECKSUMS:
   React-logger: f9d104eace4ce03d7d5ab96802069d9905082225
   React-Mapbuffer: 23ffe602d0f5ca53b861ef8534cb8c63c4479671
   React-microtasksnativemodule: 73fdf0c53b6d50d55de2d5bd9abfb8c006b043a4
+  react-native-google-maps: ee48410bb3f1390abfa20592a44db5d6ada83e4d
+  react-native-maps: 2e6e9896195781327ee15b33e3e84bf73c08207a
   react-native-safe-area-context: 458f6b948437afcb59198016b26bbd02ff9c3b47
+  react-native-track-player: 82ef1756ffeea61140fea17519ecd6d64ec3cf3e
   React-nativeconfig: 67fa7a63ea288cb5b1d0dd2deaf240405fec164f
   React-NativeModulesApple: cbf1a34443e1f67b56344547f4b0af69e1c685ba
   React-perflogger: f02ee21d98773121d77993b3c1a8be445840fae3
@@ -2131,14 +2202,16 @@ SPEC CHECKSUMS:
   React-utils: 9f9a6a31d703b136eb1614d914c10a3c96b1e6dd
   ReactCodegen: 9a99ced51aab02909c7ab5056f33dff7054305bb
   ReactCommon: 04292c6f596181ebf755e7929d96d2148542b0e8
-  RevenueCat: 4be87c151dff652d2a5b7af46073db11f01ad93f
+  RevenueCat: 9af6740f8629097fcacda9b3cb6b927319c53a26
   RNCAsyncStorage: d1a3d7b8d4e234191fd5edc850f965e76f5fb387
-  RNPurchases: 244b26756f359204de1eb3778e1b0f1a8e4a9611
+  RNPurchases: 286149883017e5c9628f7c8d8f2e7a0084efc85e
   RNReanimated: 9ee6347ca0aa3cf78cae715455e781728ae142e2
   RNScreens: d022507f2b6d76c73335e9e35aedcf7bb2f791b0
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
+  SwiftAudioEx: f6aa653770f3a0d3851edaf8d834a30aee4a7646
   Yoga: 88e46d0f2096eb9762a82c2c45ab23b0880de97d
+  ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
-PODFILE CHECKSUM: 69896e8a8884c0f654e691f48b6ff449d4186876
+PODFILE CHECKSUM: 6edad45e947d51bec4c6d9719a5563a533fac87e
 
 COCOAPODS: 1.14.3

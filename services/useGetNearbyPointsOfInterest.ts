@@ -13,10 +13,6 @@ export interface Place {
   };
 }
 
-interface PlacesResponse {
-  places: Place[];
-}
-
 export const useGetNearbyPointsOfInterest = (
   defaultCoordinates: Coordinates | null
 ) => {
@@ -64,8 +60,14 @@ export const useGetNearbyPointsOfInterest = (
 
       if (!data.places || !Array.isArray(data.places)) {
         console.error("Unexpected API response structure:", data);
+        console.log("NO NEARBY PLACES: ", data);
         return [];
       }
+
+      console.log(
+        "NEARBY PLACES: ",
+        data.places.map((place: Place) => place.displayName.text)
+      );
 
       return data.places.map((place: Place) => place.displayName.text);
     } catch (error) {

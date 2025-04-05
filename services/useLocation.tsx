@@ -21,6 +21,7 @@ export const useLocation = () => {
       if (locationPermission.status === "granted") {
         let location = await Location.getCurrentPositionAsync();
         setStatus("idle");
+        console.log("USER LOCATION: ", location);
         return {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,

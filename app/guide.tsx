@@ -12,7 +12,7 @@ import { Text, View } from "@/components/Themed";
 import FeatherIcon from "@expo/vector-icons/Feather";
 import { router, useLocalSearchParams } from "expo-router";
 import { getGuide } from "@/services/supabaseService";
-import { Guide, ContentStructure } from "@/types";
+import { Guide } from "@/types";
 
 import { AudioPlayer } from "@/components/uikit";
 import { LocationMap } from "@/components";
@@ -23,20 +23,12 @@ export default function GuideScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [guide, setGuide] = useState<Guide | null>(null);
-  const [parsedContent, setParsedContent] = useState<ContentStructure | null>(
-    null
-  );
 
   useEffect(() => {
     const fetchGuide = async () => {
       try {
         const guide = await getGuide(guideId as string);
         setGuide(guide);
-
-        // Parse the content string into an object
-        const parsedContent = JSON.parse(guide.content as unknown as string);
-        setParsedContent(parsedContent);
-
         setLoading(false);
       } catch (err) {
         console.error("Error fetching guide:", err);
@@ -60,7 +52,7 @@ export default function GuideScreen() {
     );
   }
 
-  if (!guide || !parsedContent) {
+  if (!guide) {
     return (
       <View style={styles.errorContainer}>
         <Text>{error || "Error loading guide"}</Text>
@@ -82,7 +74,7 @@ export default function GuideScreen() {
               <FeatherIcon color="#fff" name="chevron-left" size={28} />
             </TouchableOpacity>
             <View style={styles.locationInfo}>
-              <Text style={styles.locationTitle}>{parsedContent?.title}</Text>
+              <Text style={styles.locationTitle}>Location Guide</Text>
               <View style={styles.coordinatesContainer}>
                 <FeatherIcon
                   color="#fff"
@@ -91,8 +83,8 @@ export default function GuideScreen() {
                   style={styles.coordinatesIcon}
                 />
                 <Text style={styles.locationSubtitle}>
-                  {Number(guide.latitude).toFixed(3)}°,{" "}
-                  {Number(guide.longitude).toFixed(3)}°
+                  {guide.coordinates.latitude.toFixed(3)}°,{" "}
+                  {guide.coordinates.longitude.toFixed(3)}°
                 </Text>
               </View>
             </View>
@@ -102,11 +94,7 @@ export default function GuideScreen() {
         {/* Map Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Map Location</Text>
-          <Text>
-            Map is coming soon, some package issues with expo
-            {Number(guide.latitude).toFixed(3)}°,{" "}
-            {Number(guide.longitude).toFixed(3)}°
-          </Text>
+          <LocationMap coordinates={guide.coordinates} />
         </View>
 
         {/* Audio Section */}
@@ -118,7 +106,7 @@ export default function GuideScreen() {
         {/* Description Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Description</Text>
-          <Text style={styles.description}>{parsedContent?.conclusion}</Text>
+          <Text style={styles.description}>{guide.content}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

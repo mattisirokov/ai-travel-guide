@@ -15,23 +15,17 @@ interface SelectMediaTileProps {
 
 export default function SelectMediaTile({ type }: SelectMediaTileProps) {
   const { uploadFile } = useFileUpload();
-  const { addMedia, setUploadStatus, uploadStatus, media } = useMediaStore();
+  const { addImageUrl } = useMediaStore();
 
   const handleMediaSelect = async (fileUri: string) => {
     try {
       const uploadResult = await uploadFile(fileUri);
-      addMedia(uploadResult.url);
-      setUploadStatus({
-        status: "success",
+      addImageUrl(uploadResult.url);
+      router.push({
+        pathname: "/generateGuide",
       });
-      router.push("/generateGuide");
     } catch (error) {
       console.error("Error uploading image:", error);
-      setUploadStatus({
-        status: "error",
-        error:
-          error instanceof Error ? error.message : "Failed to upload image",
-      });
     }
   };
 
@@ -52,13 +46,7 @@ export default function SelectMediaTile({ type }: SelectMediaTileProps) {
     <TouchableOpacity onPress={onSelect}>
       <View style={styles.button}>
         <Text style={styles.buttonText}>
-          {uploadStatus.status === "uploading"
-            ? "Uploading..."
-            : uploadStatus.status === "error"
-            ? "Error: " + uploadStatus.error
-            : type === "gallery"
-            ? "Select from Gallery"
-            : "Take a Photo"}
+          {type === "gallery" ? "Select from Gallery" : "Take a Photo"}
         </Text>
       </View>
     </TouchableOpacity>

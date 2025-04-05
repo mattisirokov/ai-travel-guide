@@ -1,29 +1,30 @@
 import { StyleSheet } from "react-native";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 
 interface LocationMapProps {
-  latitude: number;
-  longitude: number;
   title?: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
-export function LocationMap({ latitude, longitude, title }: LocationMapProps) {
+export function LocationMap({ coordinates, title }: LocationMapProps) {
   return (
     <MapView
       style={styles.map}
-      provider={PROVIDER_GOOGLE}
       initialRegion={{
-        latitude: Number(latitude),
-        longitude: Number(longitude),
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
         latitudeDelta: 0.08,
         longitudeDelta: 0.08,
       }}
     >
       <Marker
-        identifier={`marker-${latitude}-${longitude}`}
+        identifier={`marker-${coordinates.latitude}-${coordinates.longitude}`}
         coordinate={{
-          latitude: Number(latitude),
-          longitude: Number(longitude),
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude,
         }}
         title={title}
       />

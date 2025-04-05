@@ -16,6 +16,10 @@ interface ChatCompletionParams {
   systemPrompt?: string;
 }
 
+interface ChatCompletionResponse {
+  content: string;
+}
+
 export const createChatCompletion = async ({
   messages,
   model,
@@ -23,7 +27,7 @@ export const createChatCompletion = async ({
   temperature = 0.7,
   responseSchema,
   systemPrompt,
-}: ChatCompletionParams): Promise<string> => {
+}: ChatCompletionParams): Promise<ChatCompletionResponse> => {
   try {
     const finalMessages: ChatCompletionMessageParam[] = systemPrompt
       ? [
@@ -43,7 +47,13 @@ export const createChatCompletion = async ({
       response_format: responseSchema,
     });
 
-    return completion.choices[0].message.content || "";
+    console.log(
+      "RESPONSE TO THE CHAT COMPLETION",
+      completion.choices[0].message.content
+    );
+    return {
+      content: completion.choices[0].message.content || "",
+    };
   } catch (error) {
     if (error instanceof OpenAI.APIError) {
       console.error("OpenAI API Error:", {
@@ -95,7 +105,10 @@ export const analyzeImages = async ({
       response_format: responseSchema,
     });
 
-    console.log("REPOSNSE TO THE IMAGE ANALYSIS", response);
+    console.log(
+      "RESPONSE TO THE IMAGE ANALYSIS",
+      response.choices[0].message.content
+    );
     return response.choices[0].message.content || "";
   } catch (error) {
     if (error instanceof OpenAI.APIError) {

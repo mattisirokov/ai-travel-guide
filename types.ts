@@ -40,20 +40,11 @@ export interface UploadResult {
 export interface Guide {
   id: string;
   user_id: string;
-  content: ContentStructure;
+  content: string;
   image_url: string;
-  longitude: number;
-  latitude: number;
-}
-
-export interface ContentStructure {
-  title: string;
-  introduction: string;
-  historicalContext: string;
-  architecturalDetails: string;
-  culturalSignificance: string;
-  interestingStories: string[];
-  notableFeatures: string[];
-  modernContext: string;
-  conclusion: string;
+  created_at: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
 }

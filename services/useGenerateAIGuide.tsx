@@ -1,16 +1,30 @@
+import { useState } from "react";
 import { useLocation } from "./useLocation";
-import { useMediaStore } from "@/stores/useMediaStore";
-import { useGuideGenerationStore } from "@/stores/useGuideGenerationStore";
 import { useGetNearbyPointsOfInterest } from "./useGetNearbyPointsOfInterest";
+import { useImageAnalysis } from "./useImageAnalysis";
+import { useGenerateGuideText } from "./useGenerateGuideText";
+import { useMediaStore } from "@/stores/useMediaStore";
+type GenerationStep =
+  | "idle"
+  | "getting_location"
+  | "analyzing_location"
+  | "analyzing_image"
+  | "generating_guide"
+  | "complete"
+  | "error";
 
 export const useGenerateAIGuide = () => {
-  const {
-    locationAnalysisStatus,
-    userLocation,
-    setUserLocation,
-    setLocationAnalyisResults,
-    setLocationAnalysisStatus,
-  } = useGuideGenerationStore();
+  const [generationStep, setGenerationStep] = useState<GenerationStep>("idle");
+
+  const [userLocation, setUserLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+
+  const [locationAnalysisResults, setLocationAnalysisResults] = useState<any[]>(
+    []
+  );
+  const [imageAnalysisResults, setImageAnalysisResults] = useState<any[]>([]);
 
   const {
     getUserLocation,
@@ -22,49 +36,79 @@ export const useGenerateAIGuide = () => {
     userLocation || null
   );
 
-  const { media } = useMediaStore();
+  const { analyzeImage, isAnalyzing, analysisResult, error } =
+    useImageAnalysis();
+
+  const { generateGuide: generateGuideContent } = useGenerateGuideText();
 
   const generateGuide = async () => {
+    const { imageUrl } = useMediaStore();
+
+    let nearbyPlaces: any[] = [];
+    let locationImageAnalysis: any = null;
+
     try {
       // Step 1: Get user location
-
+      setGenerationStep("getting_location");
       const location = await getUserLocation();
 
       if (!location) {
         throw new Error("No location data available");
       }
 
-      console.log("USERS LOCATION: ", location);
+      setUserLocation(location);
 
       if (userLocationStatus === "error" || locationError) {
         throw new Error(locationError || "Failed to get user location");
       }
 
       // Step 2: Get nearby points of interest using the location we just got
-
-      setLocationAnalysisStatus("fetching");
+      setGenerationStep("analyzing_location");
 
       try {
-        const nearbyPlaces = await nearbyPlacesService.fetchNearbyPlaces(
-          location
-        );
+        nearbyPlaces = await nearbyPlacesService.fetchNearbyPlaces(location);
 
         if (!nearbyPlaces || nearbyPlaces.length === 0) {
-          console.log("No nearby places found");
-          setLocationAnalyisResults([]);
+          setLocationAnalysisResults([]);
         } else {
-          setLocationAnalyisResults(nearbyPlaces);
+          setLocationAnalysisResults(nearbyPlaces);
         }
-
-        setLocationAnalysisStatus("complete");
-        console.log("NEARBY PLACES: ", nearbyPlaces);
       } catch (error) {
         console.error("Nearby places error:", error);
-        setLocationAnalysisStatus("error");
-        setLocationAnalyisResults([]);
+        setLocationAnalysisResults([]);
         throw new Error("Failed to get nearby points of interest");
       }
+
+      // Step 3: Analyze the image and return some tags
+      setGenerationStep("analyzing_image");
+
+      try {
+        locationImageAnalysis = await analyzeImage(imageUrl);
+        setImageAnalysisResults(locationImageAnalysis as any);
+      } catch (error) {
+        console.error("Image analysis error:", error);
+        setImageAnalysisResults([]);
+        throw new Error("Failed to analyze image");
+      }
+
+      // Step 4: Generate the audio guide content
+      setGenerationStep("generating_guide");
+
+      try {
+        const guide = await generateGuideContent({
+          location,
+          nearbyPlaces,
+          imageAnalysis: locationImageAnalysis,
+        });
+
+        setGenerationStep("complete");
+        return guide;
+      } catch (error) {
+        console.error("Guide generation error:", error);
+        throw new Error("Failed to generate guide content");
+      }
     } catch (error) {
+      setGenerationStep("error");
       const errorMessage =
         error instanceof Error ? error.message : "Failed to generate guide";
       throw new Error(errorMessage);
@@ -73,12 +117,9 @@ export const useGenerateAIGuide = () => {
 
   return {
     generateGuide,
-    isProcessingLocation:
-      userLocationStatus === "loading" || locationAnalysisStatus === "fetching",
-    locationError:
-      locationError ||
-      (locationAnalysisStatus === "error"
-        ? "Failed to analyze location"
-        : null),
+    generationStep,
+    userLocation,
+    locationAnalysisResults,
+    imageAnalysisResults,
   };
 };

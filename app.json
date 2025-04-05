@@ -17,7 +17,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.matti.sirokov.ai-travel-guide",
       "config": {
-        "googleMapsApiKey": "YOUR_IOS_API_KEY_HERE"
+        "googleMapsApiKey": "process.env.GOOGLE_MAPS_API_KEY"
       }
     },
     "android": {
@@ -31,7 +31,7 @@
       ],
       "config": {
         "googleMaps": {
-          "apiKey": "YOUR_ANDROID_API_KEY_HERE"
+          "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
         }
       }
     },

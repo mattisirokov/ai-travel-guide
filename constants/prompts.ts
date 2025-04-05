@@ -9,5 +9,7 @@ export const PROMTS = {
   - History
   - Tips for the traveler
   - Conclusion
+
+  Make sure to include all the information from the image analysis and the location information when making your guide.
   `,
 };
