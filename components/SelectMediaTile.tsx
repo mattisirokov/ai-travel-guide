@@ -1,71 +1,46 @@
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-
-import { router } from "expo-router";
-
-import { useOpenCamera } from "@/media/hooks/useOpenCamera";
-import { useSelectMediaFromLibrary } from "@/media/hooks/useSelectMediaFromLibrary";
-import { useFileUpload } from "@/media/hooks/useFileUpload";
-import { useMediaStore } from "@/stores/useMediaStore";
-
+import React from "react";
+import { StyleSheet, TouchableOpacity, Text } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
 
 interface SelectMediaTileProps {
   type: "camera" | "gallery";
+  onSelect: () => void;
 }
 
-export default function SelectMediaTile({ type }: SelectMediaTileProps) {
-  const { uploadFile } = useFileUpload();
-  const { addImageUrl } = useMediaStore();
-
-  const handleMediaSelect = async (fileUri: string) => {
-    try {
-      const uploadResult = await uploadFile(fileUri);
-      addImageUrl(uploadResult.url);
-      router.push({
-        pathname: "/generateGuide",
-      });
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
-  };
-
-  const { selectImageFromGallery } =
-    useSelectMediaFromLibrary(handleMediaSelect);
-
-  const { openCamera } = useOpenCamera(handleMediaSelect);
-
-  const onSelect = () => {
-    if (type === "gallery") {
-      selectImageFromGallery();
-    } else {
-      openCamera();
-    }
-  };
-
+export default function SelectMediaTile({
+  type,
+  onSelect,
+}: SelectMediaTileProps) {
   return (
-    <TouchableOpacity onPress={onSelect}>
-      <View style={styles.button}>
-        <Text style={styles.buttonText}>
-          {type === "gallery" ? "Select from Gallery" : "Take a Photo"}
-        </Text>
-      </View>
+    <TouchableOpacity style={styles.button} onPress={onSelect}>
+      <Text style={styles.buttonText}>
+        {type === "gallery" ? "Upload From Gallery" : "Camera"}
+      </Text>
+      <Feather
+        name={type === "gallery" ? "upload" : "camera"}
+        size={24}
+        color="white"
+      />
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    minWidth: "100%",
+    backgroundColor: Colors.primary,
     padding: 16,
+    borderRadius: 20,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 12,
     marginBottom: 12,
-    backgroundColor: Colors.primary,
+    minHeight: 64,
   },
   buttonText: {
-    fontSize: 18,
     color: "white",
+    fontSize: 18,
     fontWeight: "500",
+    marginRight: 12,
   },
 });

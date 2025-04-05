@@ -26,4 +26,5 @@ export default {
   textPrimary: "#000000",
   textSecondary: "#666666",
   textTertiary: "#999999",
+  textWhite: "#FFFFFF",
 };
