@@ -20,7 +20,7 @@ export default function LoadingGuideScreen() {
       }
 
       try {
-        const guideContent = await generateGuide(imageUrl);
+        const guideContent = await generateGuide();
 
         // Save the guide to the database
         const savedGuide = await saveGuideToDatabase({
