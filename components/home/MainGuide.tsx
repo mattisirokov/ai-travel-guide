@@ -35,6 +35,7 @@ export function MainGuide({ guide }: { guide: Guide }) {
       />
 
       <View style={styles.featuredCardTag}>
+        <FontAwesome name="calendar" size={16} style={{ opacity: 0.9 }} />
         <Text style={styles.featuredCardTagText}>
           {new Date(guide.created_at).toLocaleDateString()}
         </Text>
@@ -63,7 +64,6 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 24,
     backgroundColor: "transparent",
-    marginBottom: 48,
     overflow: "hidden",
   },
   featuredCardImg: {
@@ -87,6 +87,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 16,
     paddingVertical: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   cardTitleContainer: {
     position: "absolute",
