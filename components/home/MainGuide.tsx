@@ -46,7 +46,7 @@ export function MainGuide({ guide }: { guide: Guide }) {
             name="map-marker"
             size={16}
             color={Colors.textWhite}
-            style={{ opacity: 0.8 }}
+            style={{ opacity: 0.9 }}
           />
           <Text style={styles.cardSubtitle}>
             {guide.coordinates.latitude}, {guide.coordinates.longitude}
