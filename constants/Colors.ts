@@ -9,7 +9,7 @@ export default {
   primaryBackground: "#FFF1ED", // Very light orange background
 
   // Navigation colors
-  navigationBackground: "#fff",
+  navigationBackground: "#1C1C1E",
   tabIconDefault: "#8E8E93",
   tabIconSelected: "#FF4B2B",
 

@@ -21,10 +21,10 @@ export default function CreateScreen() {
   const handleMediaSelect = async (fileUri: string) => {
     try {
       const uploadResult = await uploadFile(fileUri);
-      // router.push({
-      //   pathname: "/generateGuide",
-      //   params: { imageUrl: uploadResult.url },
-      // });
+      router.push({
+        pathname: "/generateGuide",
+        params: { imageUrl: uploadResult.url },
+      });
     } catch (error) {
       console.error("Error uploading image:", error);
     }
@@ -32,6 +32,7 @@ export default function CreateScreen() {
 
   const { selectImageFromGallery } =
     useSelectMediaFromLibrary(handleMediaSelect);
+
   const { openCamera } = useOpenCamera(handleMediaSelect);
 
   return (
