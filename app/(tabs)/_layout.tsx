@@ -5,6 +5,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Colors from "@/constants/Colors";
 
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
+import { useHapticFeedback } from "@/services/useHapticFeedback";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -20,7 +21,7 @@ function TabBarIcon(props: {
       }}
     >
       <FontAwesome
-        size={28}
+        size={30}
         style={{
           color: props.focused ? "white" : "rgba(255,255,255,0.5)",
         }}
@@ -65,6 +66,8 @@ function HighlightedTabBarIcon(props: {
 }
 
 export default function TabLayout() {
+  const { triggerHaptic } = useHapticFeedback();
+
   return (
     <Tabs
       screenOptions={{
@@ -97,7 +100,12 @@ export default function TabLayout() {
           }: {
             color: string;
             focused: boolean;
-          }) => <TabBarIcon name="home" color={color} focused={focused} />,
+          }) => {
+            if (focused) {
+              triggerHaptic("light");
+            }
+            return <TabBarIcon name="home" color={color} focused={focused} />;
+          },
           headerShown: false,
         }}
       />
@@ -111,7 +119,12 @@ export default function TabLayout() {
           }: {
             color: string;
             focused: boolean;
-          }) => <HighlightedTabBarIcon name="plus" color={color} />,
+          }) => {
+            if (focused) {
+              triggerHaptic("medium");
+            }
+            return <HighlightedTabBarIcon name="plus" color={color} />;
+          },
           headerShown: false,
         }}
       />
@@ -125,7 +138,12 @@ export default function TabLayout() {
           }: {
             color: string;
             focused: boolean;
-          }) => <TabBarIcon name="cog" color={color} focused={focused} />,
+          }) => {
+            if (focused) {
+              triggerHaptic("light");
+            }
+            return <TabBarIcon name="cog" color={color} focused={focused} />;
+          },
           headerShown: false,
         }}
       />

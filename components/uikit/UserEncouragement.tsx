@@ -1,10 +1,13 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "../Themed";
+
 import { router } from "expo-router";
+
 import { FontAwesome } from "@expo/vector-icons";
+import { MainGuide } from "@/components/home/MainGuide";
+
 import Colors from "@/constants/Colors";
 import { Guide } from "@/types";
-import { MainGuide } from "@/components/home/MainGuide";
 
 export function UserEncouragement({ firstGuide }: { firstGuide: Guide }) {
   return (
@@ -19,7 +22,9 @@ export function UserEncouragement({ firstGuide }: { firstGuide: Guide }) {
         </Text>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push("/(tabs)/create")}
+          onPress={() => {
+            router.push("/(tabs)/create");
+          }}
         >
           <View style={styles.buttonContent}>
             <FontAwesome name="plus" size={24} color={Colors.textWhite} />
