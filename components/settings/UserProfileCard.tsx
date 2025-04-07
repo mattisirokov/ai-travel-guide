@@ -4,6 +4,7 @@ import { StyleSheet } from "react-native";
 import { View, Text } from "@/components/Themed";
 
 import { UserProfile } from "@/types";
+import { UserProfileIcon } from "@/components/uikit";
 
 export function UserProfileCard({
   userProfile = null,
@@ -19,12 +20,7 @@ export function UserProfileCard({
       <Text style={styles.sectionTitle}>Your profile</Text>
       <View style={styles.sectionBody}>
         <View style={styles.profile}>
-          <View style={styles.profileAvatar}>
-            <Text style={styles.profileAvatarText}>
-              {userProfile.first_name.charAt(0)}
-              {userProfile.last_name.charAt(0)}
-            </Text>
-          </View>
+          <UserProfileIcon userProfile={userProfile} />
 
           <View style={styles.profileBody}>
             <Text style={styles.profileName}>
@@ -73,15 +69,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
   },
-  profileAvatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 9999,
-    marginRight: 12,
-    backgroundColor: "#f0f0f0",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   profileBody: {
     marginRight: "auto",
   },
@@ -95,10 +82,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "400",
     color: "#858585",
-  },
-  profileAvatarText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#292929",
   },
 });

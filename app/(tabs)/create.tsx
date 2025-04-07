@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     color: Colors.textWhite,
-    opacity: 0.8,
   },
   buttonContainer: {
     marginTop: "auto",
