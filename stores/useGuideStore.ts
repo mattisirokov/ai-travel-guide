@@ -12,7 +12,7 @@ interface GuideStore {
   setLoadingStatus: (loadingStatus: LoadingStatus) => void;
 }
 
-const useGuideStore = create<GuideStore>((set) => ({
+export const useGuideStore = create<GuideStore>((set) => ({
   loadingStatus: "idle",
   guides: null,
   error: null,

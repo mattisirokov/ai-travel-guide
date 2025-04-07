@@ -11,10 +11,9 @@ import {
 
 import { Text } from "../Themed";
 import { router } from "expo-router";
-import useGuideStore from "@/stores/useGuideStore";
+import { Guide } from "@/types";
 
-export default function ContentFeed() {
-  const { guides, loadingStatus, error } = useGuideStore();
+export default function ContentFeed({ guides }: { guides: Guide[] }) {
   const [refreshing, setRefreshing] = useState(false);
 
   if (!guides || guides.length === 0) {
