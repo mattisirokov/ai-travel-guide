@@ -16,7 +16,7 @@ export function MainGuide({ guide }: { guide: Guide }) {
       onPress={() => {
         router.push({
           pathname: "/guide",
-          params: { guideId: guide.id },
+          params: { guideId: guide.id, source: "home" },
         });
       }}
     >

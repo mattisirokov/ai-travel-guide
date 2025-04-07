@@ -18,7 +18,7 @@ import { AudioPlayer } from "@/components/uikit";
 import { LocationMap } from "@/components";
 
 export default function GuideScreen() {
-  const { guideId } = useLocalSearchParams();
+  const { guideId, source } = useLocalSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +41,11 @@ export default function GuideScreen() {
   }, []);
 
   const handleBackPress = () => {
-    router.push("/(tabs)");
+    if (source === "home") {
+      router.back();
+    } else {
+      router.push("/(tabs)");
+    }
   };
 
   if (loading) {
