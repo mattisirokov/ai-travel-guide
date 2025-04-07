@@ -24,7 +24,7 @@ export default function Settings() {
   const { userProfile, signOut } = useAuthStore();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.content}>
         <UserProfileCard userProfile={userProfile} />
         <UserPreferences />

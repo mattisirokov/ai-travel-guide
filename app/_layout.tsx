@@ -2,20 +2,13 @@ import { router, Stack } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { StatusBar } from "expo-status-bar";
 
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 import useGuideStore from "@/stores/useGuideStore";
-import { useColorScheme } from "@/components/useColorScheme";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -81,7 +74,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <ThemeProvider value={DefaultTheme}>
+    <>
       <StatusBar style="dark" />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -90,6 +83,6 @@ function RootLayoutNav() {
         <Stack.Screen name="signUp" options={{ headerShown: false }} />
         <Stack.Screen name="guide" options={{ headerShown: false }} />
       </Stack>
-    </ThemeProvider>
+    </>
   );
 }

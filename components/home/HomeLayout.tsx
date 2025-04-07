@@ -17,7 +17,7 @@ export default function HomeLayout({
   const { userProfile } = useAuthStore();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <View style={styles.header}>
           <View>

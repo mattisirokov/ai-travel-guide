@@ -3,14 +3,15 @@ import { View } from "@/components/Themed";
 
 import HomeLayout from "@/components/home/HomeLayout";
 import ContentFeed from "@/components/home/ContentFeed";
+import { PageWrapper } from "@/components/uikit";
 
 export default function TabOneScreen() {
   return (
-    <HomeLayout>
-      <View style={styles.container}>
-        <ContentFeed />
-      </View>
-    </HomeLayout>
+    <PageWrapper>
+      <HomeLayout>
+        <View style={styles.container}>{/* <ContentFeed /> */}</View>
+      </HomeLayout>
+    </PageWrapper>
   );
 }
 

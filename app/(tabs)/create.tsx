@@ -1,8 +1,12 @@
-import { StyleSheet, View, Text, SafeAreaView } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { router } from "expo-router";
 
-import { VideoBackground } from "@/components/uikit/VideoBackground";
-import { LoadingOverlay } from "@/components/uikit/LoadingOverlay";
+import {
+  VideoBackground,
+  LoadingOverlay,
+  PageWrapper,
+} from "@/components/uikit";
+
 import SelectMediaTile from "@/components/SelectMediaTile";
 
 import { useOpenCamera } from "@/media/hooks/useOpenCamera";
@@ -37,7 +41,7 @@ export default function CreateScreen() {
 
   return (
     <VideoBackground source={VIDEO_BACKGROUND}>
-      <SafeAreaView style={styles.container}>
+      <PageWrapper>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
             Its time to explore the{"\n"}world one picture at a{"\n"}time
@@ -56,15 +60,12 @@ export default function CreateScreen() {
             subMessage={uploadStatus.error || "Failed to upload image"}
           />
         )}
-      </SafeAreaView>
+      </PageWrapper>
     </VideoBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   titleContainer: {
     paddingHorizontal: 20,
     paddingTop: 65,
@@ -77,6 +78,5 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: "auto",
     paddingHorizontal: 20,
-    paddingBottom: 32,
   },
 });
