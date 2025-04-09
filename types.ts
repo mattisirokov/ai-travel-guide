@@ -38,13 +38,18 @@ export interface UploadResult {
 }
 
 export interface Guide {
-  id: string;
+  id: number;
   user_id: string;
-  content: string;
+  content: ContentBlock[];
   image_url: string;
   created_at: string;
   coordinates: {
     latitude: number;
     longitude: number;
   };
+}
+
+export interface ContentBlock {
+  title: string;
+  description: string;
 }

@@ -31,6 +31,10 @@ export default function GuideScreen() {
         const guide = await getGuide(guideId as string);
         setGuide(guide);
         setLoading(false);
+        console.log(
+          "THIS IS THE GUIDE FROM",
+          guide.content.map((block) => block.title)
+        );
       } catch (err) {
         console.error("Error fetching guide:", err);
         setError(err instanceof Error ? err.message : "Failed to load guide");
@@ -73,7 +77,7 @@ export default function GuideScreen() {
               onPress={handleBackPress}
               style={styles.backButton}
             >
-              <FeatherIcon color="#fff" name="chevron-left" size={28} />
+              <FeatherIcon color="#fff" name="chevron-left" size={36} />
             </TouchableOpacity>
             <View style={styles.locationInfo}>
               <Text style={styles.locationTitle}>Location Guide</Text>
@@ -108,7 +112,11 @@ export default function GuideScreen() {
         {/* Description Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Description</Text>
-          <Text style={styles.description}>{guide.content}</Text>
+          {/* <Text style={styles.description}>
+            {guide.content.contentBlocks
+              .map((block) => block.description)
+              .join("\n")}
+          </Text> */}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -131,7 +139,7 @@ const styles = StyleSheet.create({
   },
   heroContainer: {
     position: "relative",
-    height: 350,
+    height: 300,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 30,
@@ -162,6 +170,8 @@ const styles = StyleSheet.create({
     marginTop: 12,
     backgroundColor: "rgba(255,255,255,0.3)",
     borderRadius: 12,
+    borderColor: "rgba(255,255,255,0.5)",
+    borderWidth: 1,
   },
   section: {
     padding: 20,

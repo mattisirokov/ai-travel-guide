@@ -5,14 +5,30 @@ export const guideResponseSchema: ResponseFormatJSONSchema = {
   json_schema: {
     name: "guide_response",
     description:
-      "Schema for generating an engaging audio guide narration about a photographed location.",
+      "Schema for generating an engaging audio guide narration about a photographed location, organized into thematic blocks.",
     schema: {
       type: "object",
       properties: {
         content: {
-          type: "string",
+          type: "array",
           description:
-            "A complete, engaging narrative about the location that includes its history, significance, and interesting features. The content should flow naturally and be suitable for an audio guide.",
+            "An array of content blocks, each containing a title and description about different aspects of the location.",
+          items: {
+            type: "object",
+            properties: {
+              title: {
+                type: "string",
+                description:
+                  "The title of the content block (e.g., 'Early History', 'Fun Facts', 'Modern Times')",
+              },
+              description: {
+                type: "string",
+                description:
+                  "A detailed description of the topic, suitable for an audio guide narration",
+              },
+            },
+            required: ["title", "description"],
+          },
         },
       },
       required: ["content"],
