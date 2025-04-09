@@ -16,6 +16,7 @@ import { Guide } from "@/types";
 
 import { AudioPlayer } from "@/components/uikit";
 import { LocationMap } from "@/components";
+import { LoadingOverlay, ErrorMessage } from "@/components/uikit";
 
 export default function GuideScreen() {
   const { guideId, source } = useLocalSearchParams();
@@ -50,18 +51,15 @@ export default function GuideScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text>Loading...</Text>
-      </View>
+      <LoadingOverlay
+        message="Loading guide..."
+        subMessage="You guide is loading, please wait..."
+      />
     );
   }
 
   if (!guide) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text>{error || "Error loading guide"}</Text>
-      </View>
-    );
+    return <ErrorMessage message={error || "Error loading guide"} />;
   }
 
   return (
