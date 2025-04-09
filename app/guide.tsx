@@ -17,6 +17,7 @@ import { Guide } from "@/types";
 import { AudioPlayer } from "@/components/uikit";
 import { LocationMap } from "@/components";
 import { LoadingOverlay, ErrorMessage } from "@/components/uikit";
+import { GuideTimelineCards } from "@/components/guide";
 
 export default function GuideScreen() {
   const { guideId, source } = useLocalSearchParams();
@@ -80,7 +81,7 @@ export default function GuideScreen() {
               <FeatherIcon color="#fff" name="chevron-left" size={36} />
             </TouchableOpacity>
             <View style={styles.locationInfo}>
-              <Text style={styles.locationTitle}>Location Guide</Text>
+              <Text style={styles.locationTitle}>{guide.title}</Text>
               <View style={styles.coordinatesContainer}>
                 <FeatherIcon
                   color="#fff"
@@ -106,17 +107,18 @@ export default function GuideScreen() {
         {/* Audio Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Audio</Text>
-          <AudioPlayer />
+          <AudioPlayer guideContent={guide.content} />
         </View>
 
         {/* Description Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Description</Text>
-          {/* <Text style={styles.description}>
-            {guide.content.contentBlocks
-              .map((block) => block.description)
-              .join("\n")}
-          </Text> */}
+          <Text style={styles.sectionTitle}>
+            Description & Historical Highlights
+          </Text>
+
+          <View style={{ flex: 1, marginTop: 16 }}>
+            <GuideTimelineCards content={guide.content} />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

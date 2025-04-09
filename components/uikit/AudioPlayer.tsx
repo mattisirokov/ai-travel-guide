@@ -3,8 +3,13 @@ import { Text, View } from "@/components/Themed";
 import FeatherIcon from "@expo/vector-icons/Feather";
 
 import Colors from "@/constants/Colors";
+import { ContentBlock } from "@/types";
 
-export function AudioPlayer() {
+interface AudioPlayerProps {
+  guideContent: ContentBlock[];
+}
+
+export function AudioPlayer({ guideContent }: AudioPlayerProps) {
   return (
     <View style={styles.container}>
       <View style={styles.content}>

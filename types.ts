@@ -40,6 +40,7 @@ export interface UploadResult {
 export interface Guide {
   id: number;
   user_id: string;
+  title: string;
   content: ContentBlock[];
   image_url: string;
   created_at: string;
