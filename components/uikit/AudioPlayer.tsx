@@ -1,6 +1,9 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
 import FeatherIcon from "@expo/vector-icons/Feather";
+import { Audio } from "expo-av";
+import { useEffect, useState } from "react";
+import { useTextToSpeech } from "@/services/useTextToSpeech";
 
 import Colors from "@/constants/Colors";
 import { ContentBlock } from "@/types";
@@ -10,20 +13,138 @@ interface AudioPlayerProps {
 }
 
 export function AudioPlayer({ guideContent }: AudioPlayerProps) {
+  const [sound, setSound] = useState<Audio.Sound>();
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const { audioUrl, isGenerating, generateSpeech, error } = useTextToSpeech();
+
+  useEffect(() => {
+    // Request audio permissions and set audio mode
+    Audio.requestPermissionsAsync().then(({ granted }) => {
+      if (!granted) {
+        console.error("Audio permissions not granted");
+      } else {
+        console.log("Audio permissions granted");
+        // Set audio mode to play even in silent mode
+        Audio.setAudioModeAsync({
+          playsInSilentModeIOS: true,
+          staysActiveInBackground: true,
+          shouldDuckAndroid: true,
+          playThroughEarpieceAndroid: false,
+        });
+      }
+    });
+
+    return () => {
+      if (sound) {
+        sound.unloadAsync();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (audioUrl) {
+      loadAudio();
+    }
+  }, [audioUrl]);
+
+  const loadAudio = async () => {
+    try {
+      if (sound) {
+        await sound.unloadAsync();
+      }
+
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        { uri: audioUrl! },
+        {
+          shouldPlay: true, // Auto-play when loaded
+          volume: 1.0,
+          isMuted: false,
+          isLooping: false,
+        },
+        onPlaybackStatusUpdate
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+    } catch (error) {
+      console.error("Error loading audio:", error);
+    }
+  };
+
+  const onPlaybackStatusUpdate = (status: any) => {
+    if (status.isLoaded) {
+      setCurrentTime(status.positionMillis);
+      setDuration(status.durationMillis || 0);
+      setIsPlaying(status.isPlaying);
+
+      // If playback has finished, reset the position
+      if (status.didJustFinish) {
+        setCurrentTime(0);
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  const togglePlayback = async () => {
+    if (isGenerating) {
+      return;
+    }
+
+    if (!sound) {
+      // Generate new audio
+
+      await generateSpeech(
+        guideContent.map((block) => block.description).join(" ")
+      );
+      return;
+    }
+
+    try {
+      if (isPlaying) {
+        await sound.pauseAsync();
+      } else {
+        // If we're at the end, restart from the beginning
+        if (currentTime >= duration) {
+          await sound.setPositionAsync(0);
+        }
+        await sound.playAsync();
+      }
+    } catch (error) {
+      console.error("Error toggling playback:", error);
+    }
+  };
+
+  const formatTime = (milliseconds: number) => {
+    const seconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
+  const progress = duration ? (currentTime / duration) * 100 : 0;
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <TouchableOpacity style={styles.playButton}>
-          <FeatherIcon name="play" size={24} color="#fff" />
+        <TouchableOpacity
+          style={[styles.playButton, isGenerating && styles.disabledButton]}
+          onPress={togglePlayback}
+        >
+          <FeatherIcon
+            name={isGenerating ? "loader" : isPlaying ? "pause" : "play"}
+            size={24}
+            color="#fff"
+          />
         </TouchableOpacity>
 
         <View style={styles.progressContainer}>
           <View style={styles.progressBar}>
-            <View style={styles.progressFill} />
+            <View style={[styles.progressFill, { width: `${progress}%` }]} />
           </View>
           <View style={styles.timeContainer}>
-            <Text style={styles.timeText}>0:00</Text>
-            <Text style={styles.timeText}>02:00</Text>
+            <Text style={styles.timeText}>{formatTime(currentTime)}</Text>
+            <Text style={styles.timeText}>{formatTime(duration)}</Text>
           </View>
         </View>
       </View>
@@ -54,6 +175,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  disabledButton: {
+    opacity: 0.5,
+  },
   progressContainer: {
     flex: 1,
     gap: 8,
@@ -66,7 +190,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   progressFill: {
-    width: "30%",
     height: "100%",
     backgroundColor: Colors.primary,
     borderRadius: 2,

@@ -32,10 +32,6 @@ export default function GuideScreen() {
         const guide = await getGuide(guideId as string);
         setGuide(guide);
         setLoading(false);
-        console.log(
-          "THIS IS THE GUIDE FROM",
-          guide.content.map((block) => block.title)
-        );
       } catch (err) {
         console.error("Error fetching guide:", err);
         setError(err instanceof Error ? err.message : "Failed to load guide");

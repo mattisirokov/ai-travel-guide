@@ -20,9 +20,9 @@ export function ContentCard({ guide }: { guide: Guide }) {
         <Image source={{ uri: guide.image_url }} style={styles.image} />
 
         <View style={styles.textContainer}>
-          <Text style={styles.title}>La Mata, Spain</Text>
+          <Text style={styles.title}>{guide.title}</Text>
           <Text style={styles.description} numberOfLines={2}>
-            {"Something here for a description"}
+            Something here for a description
           </Text>
           <View style={styles.dateContainer}>
             <Ionicons name="calendar-outline" size={16} color="#666" />

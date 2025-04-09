@@ -41,7 +41,7 @@ export function MainGuide({ guide }: { guide: Guide }) {
         </Text>
       </View>
       <View style={styles.cardTitleContainer}>
-        <Text style={styles.cardTitle}>La Mata, Spain</Text>
+        <Text style={styles.cardTitle}>{guide.title}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <FontAwesome
             name="map-marker"

@@ -122,3 +122,38 @@ export const analyzeImages = async ({
     throw error;
   }
 };
+
+interface SpeechParams {
+  input: string;
+  voice?: string;
+  model?: string;
+  instructions?: string;
+}
+
+export const createSpeech = async ({
+  input,
+  voice = "alloy",
+  model = "gpt-4o-mini-transcribe",
+  instructions,
+}: SpeechParams): Promise<ArrayBuffer> => {
+  try {
+    const response = await openai.audio.speech.create({
+      model,
+      voice,
+      input,
+      instructions,
+    });
+
+    const audioData = await response.arrayBuffer();
+    return audioData;
+  } catch (error) {
+    if (error instanceof OpenAI.APIError) {
+      console.error("OpenAI Speech API Error:", {
+        status: error.status,
+        message: error.message,
+        code: error.code,
+      });
+    }
+    throw error;
+  }
+};
