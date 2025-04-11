@@ -132,9 +132,9 @@ interface SpeechParams {
 
 export const createSpeech = async ({
   input,
-  voice = "alloy",
-  model = "gpt-4o-mini-transcribe",
-  instructions,
+  voice = "onyx",
+  model = "gpt-4o-mini-tts",
+  instructions = "Speak like a cheerful tourguide who is excited to share the history of the place.",
 }: SpeechParams): Promise<ArrayBuffer> => {
   try {
     const response = await openai.audio.speech.create({

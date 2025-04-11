@@ -6,13 +6,12 @@ import { useEffect, useState } from "react";
 import { useTextToSpeech } from "@/services/useTextToSpeech";
 
 import Colors from "@/constants/Colors";
-import { ContentBlock } from "@/types";
 
 interface AudioPlayerProps {
-  guideContent: ContentBlock[];
+  text: string;
 }
 
-export function AudioPlayer({ guideContent }: AudioPlayerProps) {
+export function AudioPlayer({ text }: AudioPlayerProps) {
   const [sound, setSound] = useState<Audio.Sound>();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -94,9 +93,7 @@ export function AudioPlayer({ guideContent }: AudioPlayerProps) {
     if (!sound) {
       // Generate new audio
 
-      await generateSpeech(
-        guideContent.map((block) => block.description).join(" ")
-      );
+      await generateSpeech(text);
       return;
     }
 
