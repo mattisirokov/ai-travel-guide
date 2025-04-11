@@ -30,11 +30,19 @@ export default function GuideScreen() {
     const fetchGuide = async () => {
       try {
         const guide = await getGuide(guideId as string);
-        // Ensure content is properly initialized
-        if (!guide.content || !Array.isArray(guide.content)) {
-          guide.content = [];
+
+        // Parse the content if it's a string
+        if (typeof guide.content === "string") {
+          try {
+            guide.content = JSON.parse(guide.content);
+          } catch (e) {
+            console.error("Error parsing guide content:", e);
+            guide.content = [];
+          }
         }
+
         setGuide(guide);
+        console.log("Parsed guide content:", guide.content);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching guide:", err);
@@ -67,8 +75,8 @@ export default function GuideScreen() {
     return <ErrorMessage message={error || "Error loading guide"} />;
   }
 
-  // Ensure content is available before rendering
-  const content = guide.content || [];
+  // Ensure content is available and properly structured
+  const content = Array.isArray(guide.content) ? guide.content : [];
   const audioText = content.map((block) => block.description).join(" ");
 
   return (
@@ -109,24 +117,20 @@ export default function GuideScreen() {
         </View>
 
         {/* Audio Section */}
-        {audioText && (
-          <View style={styles.section}>
-            <AudioPlayer text={audioText} />
-          </View>
-        )}
+        <View style={styles.section}>
+          <AudioPlayer text={audioText} />
+        </View>
 
         {/* Description Section */}
-        {content.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>
-              Description & Historical Highlights
-            </Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>
+            Description & Historical Highlights
+          </Text>
 
-            <View style={{ flex: 1, marginTop: 16 }}>
-              <GuideTimelineCards content={content} />
-            </View>
+          <View style={{ flex: 1, marginTop: 16 }}>
+            <GuideTimelineCards content={content} />
           </View>
-        )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
