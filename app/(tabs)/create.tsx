@@ -20,15 +20,13 @@ const VIDEO_BACKGROUND = require("@/assets/videos/Background.mp4");
 
 export default function CreateScreen() {
   const { uploadFile } = useFileUpload();
-  const { uploadStatus } = useMediaStore();
+  const { uploadStatus, addImageUrl } = useMediaStore();
 
   const handleMediaSelect = async (fileUri: string) => {
     try {
       const uploadResult = await uploadFile(fileUri);
-      router.push({
-        pathname: "/generateGuide",
-        params: { imageUrl: uploadResult.url },
-      });
+      addImageUrl(uploadResult.url);
+      router.push("/generateGuide");
     } catch (error) {
       console.error("Error uploading image:", error);
     }

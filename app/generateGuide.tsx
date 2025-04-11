@@ -1,16 +1,17 @@
 import { useEffect } from "react";
 import { View, Text } from "@/components/Themed";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 
 import { useGenerateAIGuide } from "@/services/useGenerateAIGuide";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useMediaStore } from "@/stores/useMediaStore";
 import { saveGuideToDatabase } from "@/services/supabaseService";
 import { ErrorMessage } from "@/components/uikit";
 
 export default function LoadingGuideScreen() {
   const { generateGuide, generationStep } = useGenerateAIGuide();
   const { userProfile } = useAuthStore();
-  const { imageUrl } = useLocalSearchParams<{ imageUrl: string }>();
+  const { imageUrl } = useMediaStore();
 
   useEffect(() => {
     const generateAndNavigate = async () => {

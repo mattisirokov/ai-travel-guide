@@ -17,6 +17,6 @@ export const useMediaStore = create<MediaStore>((set) => ({
   uploadStatus: { status: "idle" },
   addMedia: (media) => set((state) => ({ media: [...state.media, media] })),
   addImageUrl: (imageUrl) => set({ imageUrl }),
-  resetMediaFiles: () => set({ media: [] }),
+  resetMediaFiles: () => set({ media: [], imageUrl: "" }),
   setUploadStatus: (status) => set({ uploadStatus: status }),
 }));

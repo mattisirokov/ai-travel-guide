@@ -30,6 +30,10 @@ export default function GuideScreen() {
     const fetchGuide = async () => {
       try {
         const guide = await getGuide(guideId as string);
+        // Ensure content is properly initialized
+        if (!guide.content || !Array.isArray(guide.content)) {
+          guide.content = [];
+        }
         setGuide(guide);
         setLoading(false);
       } catch (err) {
@@ -54,7 +58,7 @@ export default function GuideScreen() {
     return (
       <LoadingOverlay
         message="Loading guide..."
-        subMessage="You guide is loading, please wait..."
+        subMessage="Your guide is loading, please wait..."
       />
     );
   }
@@ -62,6 +66,10 @@ export default function GuideScreen() {
   if (!guide) {
     return <ErrorMessage message={error || "Error loading guide"} />;
   }
+
+  // Ensure content is available before rendering
+  const content = guide.content || [];
+  const audioText = content.map((block) => block.description).join(" ");
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -101,22 +109,24 @@ export default function GuideScreen() {
         </View>
 
         {/* Audio Section */}
-        <View style={styles.section}>
-          <AudioPlayer
-            text={guide.content.map((block) => block.description).join(" ")}
-          />
-        </View>
+        {audioText && (
+          <View style={styles.section}>
+            <AudioPlayer text={audioText} />
+          </View>
+        )}
 
         {/* Description Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            Description & Historical Highlights
-          </Text>
+        {content.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              Description & Historical Highlights
+            </Text>
 
-          <View style={{ flex: 1, marginTop: 16 }}>
-            <GuideTimelineCards content={guide.content} />
+            <View style={{ flex: 1, marginTop: 16 }}>
+              <GuideTimelineCards content={content} />
+            </View>
           </View>
-        </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
