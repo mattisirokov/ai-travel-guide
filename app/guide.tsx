@@ -103,8 +103,9 @@ export default function GuideScreen() {
         {/* Audio Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Audio</Text>
-          {/* <AudioPlayer text={guide.content.map((block) => block.description).join(" ")} /> */}
-          <AudioPlayer text={"Testing out some of the audio player features"} />
+          <AudioPlayer
+            text={guide.content.map((block) => block.description).join(" ")}
+          />
         </View>
 
         {/* Description Section */}

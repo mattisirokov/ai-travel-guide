@@ -92,7 +92,6 @@ export function AudioPlayer({ text }: AudioPlayerProps) {
 
     if (!sound) {
       // Generate new audio
-
       await generateSpeech(text);
       return;
     }
@@ -112,6 +111,20 @@ export function AudioPlayer({ text }: AudioPlayerProps) {
     }
   };
 
+  const skipForward = async () => {
+    if (!sound) return;
+    const newPosition = Math.min(currentTime + 15000, duration);
+    await sound.setPositionAsync(newPosition);
+    setCurrentTime(newPosition);
+  };
+
+  const skipBackward = async () => {
+    if (!sound) return;
+    const newPosition = Math.max(currentTime - 15000, 0);
+    await sound.setPositionAsync(newPosition);
+    setCurrentTime(newPosition);
+  };
+
   const formatTime = (milliseconds: number) => {
     const seconds = Math.floor(milliseconds / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -124,16 +137,38 @@ export function AudioPlayer({ text }: AudioPlayerProps) {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <TouchableOpacity
-          style={[styles.playButton, isGenerating && styles.disabledButton]}
-          onPress={togglePlayback}
-        >
-          <FeatherIcon
-            name={isGenerating ? "loader" : isPlaying ? "pause" : "play"}
-            size={24}
-            color="#fff"
-          />
-        </TouchableOpacity>
+        <View style={styles.controlsContainer}>
+          <TouchableOpacity
+            style={[
+              styles.controlButton,
+              isGenerating && styles.disabledButton,
+            ]}
+            onPress={skipBackward}
+          >
+            <FeatherIcon name="rotate-ccw" size={20} color="#fff" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.playButton, isGenerating && styles.disabledButton]}
+            onPress={togglePlayback}
+          >
+            <FeatherIcon
+              name={isGenerating ? "loader" : isPlaying ? "pause" : "play"}
+              size={24}
+              color="#fff"
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.controlButton,
+              isGenerating && styles.disabledButton,
+            ]}
+            onPress={skipForward}
+          >
+            <FeatherIcon name="rotate-cw" size={20} color="#fff" />
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.progressContainer}>
           <View style={styles.progressBar}>
@@ -199,5 +234,19 @@ const styles = StyleSheet.create({
   timeText: {
     color: "#9CA3AF",
     fontSize: 12,
+  },
+  controlsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+    backgroundColor: "transparent",
+  },
+  controlButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
