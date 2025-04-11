@@ -14,6 +14,11 @@ interface ChatCompletionError {
   status?: number;
 }
 
+interface ContentBlock {
+  title: string;
+  description: string;
+}
+
 interface GuideGenerationParams {
   location: {
     latitude: number;
@@ -24,18 +29,24 @@ interface GuideGenerationParams {
 }
 
 interface GuideContent {
-  content: string;
+  title: string;
+  content: ContentBlock[];
   coordinates: {
     latitude: number;
     longitude: number;
   };
 }
 
+interface GuideResponse {
+  title: string;
+  content: ContentBlock[];
+}
+
 export const useGenerateGuideText = () => {
   const [status, setStatus] = useState<
     "idle" | "loading" | "complete" | "error"
   >("idle");
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<GuideResponse | null>(null);
   const [error, setError] = useState<ChatCompletionError | null>(null);
 
   const generateGuide = async ({
@@ -62,16 +73,17 @@ export const useGenerateGuideText = () => {
         },
       ];
 
-      const response = await createChatCompletion({
+      const response = (await createChatCompletion({
         messages,
         responseSchema: guideResponseSchema,
         temperature: 0.7,
         max_tokens: 500, // TODO: Let's change this back to 2000 when we're done with testing
-      });
+      })) as unknown as GuideResponse;
 
       setResult(response);
       setStatus("complete");
       return {
+        title: response.title,
         content: response.content,
         coordinates: location,
       };

@@ -5,10 +5,10 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useGenerateAIGuide } from "@/services/useGenerateAIGuide";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { saveGuideToDatabase } from "@/services/supabaseService";
+import { ErrorMessage } from "@/components/uikit";
 
 export default function LoadingGuideScreen() {
   const { generateGuide, generationStep } = useGenerateAIGuide();
-
   const { userProfile } = useAuthStore();
   const { imageUrl } = useLocalSearchParams<{ imageUrl: string }>();
 
@@ -20,10 +20,11 @@ export default function LoadingGuideScreen() {
       }
 
       try {
-        const guideContent = await generateGuide();
+        const guideContent = await generateGuide(imageUrl);
 
         // Save the guide to the database
         const savedGuide = await saveGuideToDatabase({
+          title: guideContent.title,
           content: guideContent.content,
           image_url: imageUrl,
           coordinates: guideContent.coordinates,
@@ -62,6 +63,10 @@ export default function LoadingGuideScreen() {
         return "Starting guide generation...";
     }
   };
+
+  if (!imageUrl) {
+    return <ErrorMessage message="No image URL provided. Please try again." />;
+  }
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>

@@ -51,9 +51,7 @@ export default function CreateScreen() {
           <SelectMediaTile type="camera" onSelect={openCamera} />
           <SelectMediaTile type="gallery" onSelect={selectImageFromGallery} />
         </View>
-
         {uploadStatus.status === "uploading" && <LoadingOverlay />}
-
         {uploadStatus.status === "error" && (
           <LoadingOverlay
             message="Error"

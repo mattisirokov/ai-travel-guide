@@ -1,10 +1,12 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { Text, View } from "@/components/Themed";
-import FeatherIcon from "@expo/vector-icons/Feather";
-import { Audio } from "expo-av";
 import { useEffect, useState } from "react";
+import { StyleSheet, TouchableOpacity } from "react-native";
+
+import { Audio } from "expo-av";
+import FeatherIcon from "@expo/vector-icons/Feather";
+
 import { useTextToSpeech } from "@/services/useTextToSpeech";
 
+import { Text, View } from "@/components/Themed";
 import Colors from "@/constants/Colors";
 
 interface AudioPlayerProps {
