@@ -137,37 +137,9 @@ export function AudioPlayer({ text }: AudioPlayerProps) {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <View style={styles.controlsContainer}>
-          <TouchableOpacity
-            style={[
-              styles.controlButton,
-              isGenerating && styles.disabledButton,
-            ]}
-            onPress={skipBackward}
-          >
-            <FeatherIcon name="rotate-ccw" size={20} color="#fff" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.playButton, isGenerating && styles.disabledButton]}
-            onPress={togglePlayback}
-          >
-            <FeatherIcon
-              name={isGenerating ? "loader" : isPlaying ? "pause" : "play"}
-              size={24}
-              color="#fff"
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.controlButton,
-              isGenerating && styles.disabledButton,
-            ]}
-            onPress={skipForward}
-          >
-            <FeatherIcon name="rotate-cw" size={20} color="#fff" />
-          </TouchableOpacity>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Audio Guide</Text>
+          <Text style={styles.subtitle}>AI Generated • Travel Guide</Text>
         </View>
 
         <View style={styles.progressContainer}>
@@ -179,6 +151,35 @@ export function AudioPlayer({ text }: AudioPlayerProps) {
             <Text style={styles.timeText}>{formatTime(duration)}</Text>
           </View>
         </View>
+
+        <View style={styles.controlsContainer}>
+          <TouchableOpacity
+            style={styles.controlButton}
+            onPress={skipBackward}
+            disabled={isGenerating || !sound}
+          >
+            <FeatherIcon name="skip-back" size={20} color={Colors.text} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.playButton, isGenerating && styles.disabledButton]}
+            onPress={togglePlayback}
+          >
+            <FeatherIcon
+              name={isGenerating ? "loader" : isPlaying ? "pause" : "play"}
+              size={24}
+              color={Colors.background}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.controlButton}
+            onPress={skipForward}
+            disabled={isGenerating || !sound}
+          >
+            <FeatherIcon name="skip-forward" size={20} color={Colors.text} />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -186,38 +187,44 @@ export function AudioPlayer({ text }: AudioPlayerProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#131316",
-    overflow: "hidden",
-    borderRadius: 15,
-    padding: 16,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
   },
   content: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
+    gap: 24,
     backgroundColor: "transparent",
   },
-  playButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: Colors.primary,
-    justifyContent: "center",
-    alignItems: "center",
+  titleContainer: {
+    backgroundColor: "transparent",
+    gap: 4,
   },
-  disabledButton: {
-    opacity: 0.5,
+  title: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: Colors.text,
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    textAlign: "center",
   },
   progressContainer: {
-    flex: 1,
     gap: 8,
     backgroundColor: "transparent",
   },
   progressBar: {
     height: 4,
-    backgroundColor: Colors.primaryLight,
+    backgroundColor: "#E5E7EB",
     borderRadius: 2,
     overflow: "hidden",
   },
@@ -232,21 +239,33 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   timeText: {
-    color: "#9CA3AF",
+    color: Colors.textSecondary,
     fontSize: 12,
   },
   controlsContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 16,
+    justifyContent: "center",
+    gap: 32,
     backgroundColor: "transparent",
   },
   controlButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "transparent",
+  },
+  playButton: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: Colors.primary,
     justifyContent: "center",
     alignItems: "center",
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
 });
