@@ -107,11 +107,7 @@ export const useGenerateAIGuide = () => {
         });
 
         const guide: Omit<Guide, "id"> = {
-          title: guideContent.title,
-          content: {
-            title: guideContent.title,
-            content: guideContent.content,
-          },
+          content: guideContent.content,
           image_url: imageUrl,
           coordinates: location,
           user_id: "",

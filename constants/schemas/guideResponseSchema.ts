@@ -9,19 +9,19 @@ export const guideResponseSchema: ResponseFormatJSONSchema = {
     schema: {
       type: "object",
       properties: {
-        title: {
-          type: "string",
-          description:
-            "The main title of the guide, typically the name of the location or landmark.",
-        },
         content: {
-          type: "array",
-          description:
-            "An array of exactly five content blocks, each containing a title and description about different aspects of the location.",
-          items: {
-            type: "object",
-            properties: {
-              title: {
+          type: "object",
+          description: "The main content structure for the guide",
+          properties: {
+            headline: {
+              type: "string",
+              description: "The main headline or title for the entire guide",
+            },
+            titles: {
+              type: "array",
+              description:
+                "An array of exactly five titles, each corresponding to a different aspect of the location.",
+              items: {
                 type: "string",
                 enum: [
                   "Early History",
@@ -30,24 +30,27 @@ export const guideResponseSchema: ResponseFormatJSONSchema = {
                   "Modern Development",
                   "Fun Facts",
                 ],
-                description:
-                  "The title of the content block. Must be one of: Early History, Architectural Significance, Cultural Heritage, Modern Development, or Fun Facts.",
               },
-              description: {
-                type: "string",
-                description:
-                  "A detailed description of the topic, suitable for an audio guide narration. Should be engaging and informative, approximately 2-3 paragraphs long.",
-              },
+              minItems: 5,
+              maxItems: 5,
+              uniqueItems: true,
             },
-            required: ["title", "description"],
-            additionalProperties: false,
+            contents: {
+              type: "array",
+              description:
+                "An array of exactly five content descriptions, each corresponding to the titles array. Each description should be engaging and informative, approximately 2-3 paragraphs long.",
+              items: {
+                type: "string",
+              },
+              minItems: 5,
+              maxItems: 5,
+            },
           },
-          minItems: 5,
-          maxItems: 5,
-          uniqueItems: true,
+          required: ["headline", "titles", "contents"],
+          additionalProperties: false,
         },
       },
-      required: ["title", "content"],
+      required: ["content"],
       additionalProperties: false,
     },
   },

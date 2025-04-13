@@ -40,20 +40,15 @@ export interface UploadResult {
 export interface Guide {
   id: number;
   user_id: string;
-  title: string;
-  content: {
-    title: string;
-    content: ContentBlock[];
-  };
-  image_url: string;
   created_at: string;
+  image_url: string;
+  content: {
+    headline: string;
+    titles: string[];
+    contents: string[];
+  };
   coordinates: {
     latitude: number;
     longitude: number;
   };
-}
-
-export interface ContentBlock {
-  title: string;
-  description: string;
 }

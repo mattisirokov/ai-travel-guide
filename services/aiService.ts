@@ -48,10 +48,10 @@ export const createChatCompletion = async ({
       response_format: responseSchema,
     });
 
-    console.log(
-      "RESPONSE TO THE CHAT COMPLETION",
-      completion.choices[0].message.content
-    );
+    // console.log(
+    //   "RESPONSE TO THE CHAT COMPLETION",
+    //   completion.choices[0].message.content
+    // );
     return {
       content: completion.choices[0].message.content || "",
     };

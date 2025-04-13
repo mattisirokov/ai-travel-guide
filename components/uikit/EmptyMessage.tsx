@@ -25,7 +25,7 @@ export function EmptyMessage() {
       >
         <View style={styles.buttonContent}>
           <FontAwesome name="plus" size={24} color={Colors.textWhite} />
-          <Text style={styles.buttonText}>Create Guide</Text>
+          <Text style={styles.buttonText}>Create first guide</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 20,
     width: "100%",
+    height: "100%",
   },
   iconContainer: {
     width: 64,

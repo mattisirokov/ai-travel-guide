@@ -29,8 +29,11 @@ interface GuideGenerationParams {
 }
 
 interface GuideContent {
-  title: string;
-  content: ContentBlock[];
+  content: {
+    headline: string;
+    titles: string[];
+    contents: string[];
+  };
   coordinates: {
     latitude: number;
     longitude: number;
@@ -38,8 +41,11 @@ interface GuideContent {
 }
 
 interface GuideResponse {
-  title: string;
-  content: ContentBlock[];
+  content: {
+    headline: string;
+    titles: string[];
+    contents: string[];
+  };
 }
 
 export const useGenerateGuideText = () => {
@@ -73,30 +79,41 @@ export const useGenerateGuideText = () => {
         },
       ];
 
-      const response = (await createChatCompletion({
+      const response = await createChatCompletion({
         messages,
         responseSchema: guideResponseSchema,
         temperature: 0.7,
-        max_tokens: 500, // TODO: Let's change this back to 2000 when we're done with testing
-      })) as unknown as GuideResponse;
+        max_tokens: 2000,
+      });
 
-      setResult(response);
+      if (!response || !response.content) {
+        throw new Error("Invalid response from API");
+      }
+
+      let parsedResponse: GuideResponse;
+      try {
+        parsedResponse = JSON.parse(response.content);
+      } catch (parseError) {
+        throw new Error("Failed to parse API response");
+      }
+
+      setResult(parsedResponse);
       setStatus("complete");
+
       return {
-        title: response.title,
-        content: response.content,
+        content: parsedResponse.content,
         coordinates: location,
       };
     } catch (err: any) {
+      console.error("Full error:", err);
       const errorMessage = {
         message: err.message || "Failed to generate guide",
         code: err.code,
         status: err.status,
       };
       setError(errorMessage);
-      throw errorMessage;
-    } finally {
       setStatus("error");
+      throw errorMessage;
     }
   };
 
