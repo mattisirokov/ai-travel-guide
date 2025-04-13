@@ -4,12 +4,16 @@ import { router } from "expo-router";
 
 import { useGenerateAIGuide } from "@/services/useGenerateAIGuide";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useGuideStore } from "@/stores/useGuideStore";
 import { useMediaStore } from "@/stores/useMediaStore";
+
 import { saveGuideToDatabase } from "@/services/supabaseService";
 import { ErrorMessage, LoadingOverlay } from "@/components/uikit";
 
 export default function LoadingGuideScreen() {
   const { generateGuide, generationStep } = useGenerateAIGuide();
+  const { initialize: initializeGuide } = useGuideStore();
+
   const { userProfile } = useAuthStore();
   const { imageUrl } = useMediaStore();
   const [guideContent, setGuideContent] = useState<any>(null);
@@ -37,7 +41,7 @@ export default function LoadingGuideScreen() {
             user_id: userProfile.user_id,
             created_at: new Date().toISOString(),
           });
-
+          initializeGuide(userProfile.user_id); // reload the guide store with fresh data
           router.push({
             pathname: "/guide",
             params: { guideId: savedGuide.id },

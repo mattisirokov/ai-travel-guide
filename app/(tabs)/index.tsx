@@ -12,6 +12,7 @@ import {
   EmptyMessage,
   UserEncouragement,
 } from "@/components/uikit";
+
 import ContentFeed from "@/components/home/ContentFeed";
 
 export default function TabOneScreen() {
