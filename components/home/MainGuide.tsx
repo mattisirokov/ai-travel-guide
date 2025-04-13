@@ -41,7 +41,7 @@ export function MainGuide({ guide }: { guide: Guide }) {
         </Text>
       </View>
       <View style={styles.cardTitleContainer}>
-        <Text style={styles.cardTitle}>{"something here for now"}</Text>
+        <Text style={styles.cardTitle}>{guide.content.headline}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <FontAwesome
             name="map-marker"

@@ -4,16 +4,13 @@ import { Text, View } from "../Themed";
 import { router } from "expo-router";
 
 import { FontAwesome } from "@expo/vector-icons";
-import { MainGuide } from "@/components/home/MainGuide";
 
 import Colors from "@/constants/Colors";
 import { Guide } from "@/types";
 
-export function UserEncouragement({ firstGuide }: { firstGuide: Guide }) {
+export function UserEncouragement() {
   return (
     <View style={styles.container}>
-      <MainGuide guide={firstGuide} />
-
       <View style={styles.messageContainer}>
         <Text style={styles.title}>Great start with your first guide!</Text>
         <Text style={styles.subtitle}>
@@ -39,8 +36,15 @@ export function UserEncouragement({ firstGuide }: { firstGuide: Guide }) {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingHorizontal: 24,
-    backgroundColor: "transparent",
+    backgroundColor: "white",
+    marginTop: 20,
+    borderRadius: 16,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 4,
+    padding: 20,
   },
   messageContainer: {
     alignItems: "center",

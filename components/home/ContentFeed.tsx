@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { StyleSheet, ScrollView } from "react-native";
 
@@ -9,6 +9,15 @@ import { Guide } from "@/types";
 import { ContentCard } from "./ContentCard";
 
 export default function ContentFeed({ guides }: { guides: Guide[] }) {
+  const latestGuide = useMemo(
+    () =>
+      guides.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      )[0],
+    [guides]
+  );
+
   return (
     <ScrollView
       style={styles.container}
@@ -16,7 +25,7 @@ export default function ContentFeed({ guides }: { guides: Guide[] }) {
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.mainGuideContainer}>
-        <MainGuide guide={guides[0]} />
+        <MainGuide guide={latestGuide} />
       </View>
       <View style={styles.list}>
         <Text style={styles.listTitle}>Your other guides</Text>
@@ -35,9 +44,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
   },
-  content: {
-    paddingHorizontal: 16,
-  },
+  content: {},
   mainGuideContainer: {
     marginTop: 12,
     marginBottom: 32,

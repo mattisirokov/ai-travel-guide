@@ -15,7 +15,10 @@ export const guideResponseSchema: ResponseFormatJSONSchema = {
           properties: {
             headline: {
               type: "string",
-              description: "The main headline or title for the entire guide",
+              description:
+                "A short, concise name of the location (e.g., 'Colosseum, Rome' or 'Eiffel Tower, Paris'). Should be location-focused and not exceed 30 characters.",
+              maxLength: 30,
+              pattern: "^[A-Za-z0-9\\s,.-]+$",
             },
             titles: {
               type: "array",
