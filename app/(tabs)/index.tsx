@@ -20,8 +20,7 @@ export default function TabOneScreen() {
     <PageWrapper>
       <UserHeader userProfile={userProfile} />
       <View style={styles.contentContainer}>
-        {/* {userHasNoGuides ? <EmptyMessage /> : <ContentFeed guides={guides} />} */}
-        <EmptyMessage />
+        {userHasNoGuides ? <EmptyMessage /> : <ContentFeed guides={guides} />}
       </View>
     </PageWrapper>
   );

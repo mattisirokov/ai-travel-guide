@@ -1,8 +1,6 @@
 import { useState } from "react";
-
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { View, Text } from "@/components/Themed";
-
 import Animated, {
   useAnimatedStyle,
   withTiming,
@@ -10,22 +8,22 @@ import Animated, {
   interpolate,
   useSharedValue,
 } from "react-native-reanimated";
-
 import Colors from "@/constants/Colors";
 import { Feather } from "@expo/vector-icons";
 
-import { ContentBlock } from "@/types";
-
 interface GuideTimelineCardsProps {
-  content: ContentBlock[];
+  titles: string[];
+  contents: string[];
 }
 
 const AnimatedCard = ({
-  block,
+  title,
+  content,
   isLast,
   isFirst,
 }: {
-  block: ContentBlock;
+  title: string;
+  content: string;
   isLast: boolean;
   isFirst: boolean;
 }) => {
@@ -70,27 +68,31 @@ const AnimatedCard = ({
           onPress={toggleExpand}
           activeOpacity={0.7}
         >
-          <Text style={styles.title}>{block.title}</Text>
+          <Text style={styles.title}>{title}</Text>
           <Animated.View style={chevronStyle}>
             <Feather name="chevron-down" size={20} color={Colors.textPrimary} />
           </Animated.View>
         </TouchableOpacity>
         <Animated.View style={[styles.descriptionContainer, contentStyle]}>
-          <Text style={styles.description}>{block.description}</Text>
+          <Text style={styles.description}>{content}</Text>
         </Animated.View>
       </View>
     </View>
   );
 };
 
-export function GuideTimelineCards({ content }: GuideTimelineCardsProps) {
+export function GuideTimelineCards({
+  titles,
+  contents,
+}: GuideTimelineCardsProps) {
   return (
     <View style={styles.container}>
-      {content.map((block, index) => (
+      {titles.map((title, index) => (
         <AnimatedCard
-          key={block.title}
-          block={block}
-          isLast={index === content.length - 1}
+          key={title}
+          title={title}
+          content={contents[index]}
+          isLast={index === titles.length - 1}
           isFirst={index === 0}
         />
       ))}

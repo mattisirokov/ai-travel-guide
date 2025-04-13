@@ -74,11 +74,12 @@ export default function GuideScreen() {
             <TouchableOpacity
               onPress={handleBackPress}
               style={styles.backButton}
+              hitSlop={20}
             >
-              <FeatherIcon color="#fff" name="chevron-left" size={36} />
+              <FeatherIcon color="#fff" name="chevron-left" size={24} />
             </TouchableOpacity>
             <View style={styles.locationInfo}>
-              <Text style={styles.locationTitle}>{guide.title}</Text>
+              <Text style={styles.locationTitle}>{guide.content.headline}</Text>
               <View style={styles.coordinatesContainer}>
                 <FeatherIcon
                   color="#fff"
@@ -104,9 +105,7 @@ export default function GuideScreen() {
         {/* Audio Section */}
         <View style={styles.section}>
           <AudioPlayer
-            text={guide.content.content
-              .map((block) => block.description)
-              .join(" ")}
+            text={guide.content.contents.map((content) => content).join("\n")}
           />
         </View>
 
@@ -117,7 +116,10 @@ export default function GuideScreen() {
           </Text>
 
           <View style={{ flex: 1, marginTop: 16 }}>
-            <GuideTimelineCards content={guide.content.content} />
+            <GuideTimelineCards
+              titles={guide.content.titles}
+              contents={guide.content.contents}
+            />
           </View>
         </View>
       </ScrollView>
@@ -164,8 +166,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.3)",
   },
   backButton: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     alignItems: "center",
     justifyContent: "center",
     marginLeft: 12,
