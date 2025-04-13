@@ -3,7 +3,7 @@ import { useLocation } from "./useLocation";
 import { useGetNearbyPointsOfInterest } from "./useGetNearbyPointsOfInterest";
 import { useImageAnalysis } from "./useImageAnalysis";
 import { useGenerateGuideText } from "./useGenerateGuideText";
-import { useMediaStore } from "@/stores/useMediaStore";
+import { Guide } from "@/types";
 
 type GenerationStep =
   | "idle"
@@ -42,9 +42,9 @@ export const useGenerateAIGuide = () => {
 
   const { generateGuide: generateGuideContent } = useGenerateGuideText();
 
-  const generateGuide = async () => {
-    const { imageUrl } = useMediaStore();
-
+  const generateGuide = async (
+    imageUrl: string
+  ): Promise<Omit<Guide, "id">> => {
     let nearbyPlaces: any[] = [];
     let locationImageAnalysis: any = null;
 
@@ -100,16 +100,28 @@ export const useGenerateAIGuide = () => {
       setGenerationStep("generating_guide");
 
       try {
-        const guide = await generateGuideContent({
+        const guideContent = await generateGuideContent({
           location,
           nearbyPlaces,
           imageAnalysis: locationImageAnalysis,
         });
 
+        const guide: Omit<Guide, "id"> = {
+          title: guideContent.title,
+          content: {
+            title: guideContent.title,
+            content: guideContent.content,
+          },
+          image_url: imageUrl,
+          coordinates: location,
+          user_id: "",
+          created_at: new Date().toISOString(),
+        };
+
         setGenerationStep("complete");
         return guide;
       } catch (error) {
-        console.error("Guide generation error:", error);
+        console.error("Error generating guide:", error);
         throw new Error("Failed to generate guide content");
       }
     } catch (error) {

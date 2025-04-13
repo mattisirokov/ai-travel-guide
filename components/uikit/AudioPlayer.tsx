@@ -21,13 +21,10 @@ export function AudioPlayer({ text }: AudioPlayerProps) {
   const { audioUrl, isGenerating, generateSpeech, error } = useTextToSpeech();
 
   useEffect(() => {
-    // Request audio permissions and set audio mode
     Audio.requestPermissionsAsync().then(({ granted }) => {
       if (!granted) {
         console.error("Audio permissions not granted");
       } else {
-        console.log("Audio permissions granted");
-        // Set audio mode to play even in silent mode
         Audio.setAudioModeAsync({
           playsInSilentModeIOS: true,
           staysActiveInBackground: true,

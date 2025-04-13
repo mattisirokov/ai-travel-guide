@@ -25,7 +25,13 @@ export const saveGuideToDatabase = async (
 ): Promise<Guide> => {
   const { data, error } = await supabase
     .from("Guides")
-    .insert(guide)
+    .insert({
+      ...guide,
+      content: {
+        title: guide.title,
+        content: guide.content,
+      },
+    })
     .select()
     .single();
 

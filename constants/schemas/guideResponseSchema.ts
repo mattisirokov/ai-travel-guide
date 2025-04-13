@@ -9,6 +9,11 @@ export const guideResponseSchema: ResponseFormatJSONSchema = {
     schema: {
       type: "object",
       properties: {
+        title: {
+          type: "string",
+          description:
+            "The main title of the guide, typically the name of the location or landmark.",
+        },
         content: {
           type: "array",
           description:
@@ -42,7 +47,7 @@ export const guideResponseSchema: ResponseFormatJSONSchema = {
           uniqueItems: true,
         },
       },
-      required: ["content"],
+      required: ["title", "content"],
       additionalProperties: false,
     },
   },

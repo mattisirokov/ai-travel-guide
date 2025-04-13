@@ -31,18 +31,7 @@ export default function GuideScreen() {
       try {
         const guide = await getGuide(guideId as string);
 
-        // Parse the content if it's a string
-        if (typeof guide.content === "string") {
-          try {
-            guide.content = JSON.parse(guide.content);
-          } catch (e) {
-            console.error("Error parsing guide content:", e);
-            guide.content = [];
-          }
-        }
-
         setGuide(guide);
-        console.log("Parsed guide content:", guide.content);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching guide:", err);
@@ -74,10 +63,6 @@ export default function GuideScreen() {
   if (!guide) {
     return <ErrorMessage message={error || "Error loading guide"} />;
   }
-
-  // Ensure content is available and properly structured
-  const content = Array.isArray(guide.content) ? guide.content : [];
-  const audioText = content.map((block) => block.description).join(" ");
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -118,7 +103,11 @@ export default function GuideScreen() {
 
         {/* Audio Section */}
         <View style={styles.section}>
-          <AudioPlayer text={audioText} />
+          <AudioPlayer
+            text={guide.content.content
+              .map((block) => block.description)
+              .join(" ")}
+          />
         </View>
 
         {/* Description Section */}
@@ -128,7 +117,7 @@ export default function GuideScreen() {
           </Text>
 
           <View style={{ flex: 1, marginTop: 16 }}>
-            <GuideTimelineCards content={content} />
+            <GuideTimelineCards content={guide.content.content} />
           </View>
         </View>
       </ScrollView>
