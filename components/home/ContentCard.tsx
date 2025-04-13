@@ -20,7 +20,7 @@ export function ContentCard({ guide }: { guide: Guide }) {
         <Image source={{ uri: guide.image_url }} style={styles.image} />
 
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{guide.title}</Text>
+          <Text style={styles.title}>{guide.content.title}</Text>
           <Text style={styles.description} numberOfLines={2}>
             Something here for a description
           </Text>

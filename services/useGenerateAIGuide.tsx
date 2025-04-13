@@ -4,6 +4,7 @@ import { useGetNearbyPointsOfInterest } from "./useGetNearbyPointsOfInterest";
 import { useImageAnalysis } from "./useImageAnalysis";
 import { useGenerateGuideText } from "./useGenerateGuideText";
 import { useMediaStore } from "@/stores/useMediaStore";
+
 type GenerationStep =
   | "idle"
   | "getting_location"
@@ -49,6 +50,7 @@ export const useGenerateAIGuide = () => {
 
     try {
       // Step 1: Get user location
+
       setGenerationStep("getting_location");
       const location = await getUserLocation();
 
@@ -63,6 +65,7 @@ export const useGenerateAIGuide = () => {
       }
 
       // Step 2: Get nearby points of interest using the location we just got
+
       setGenerationStep("analyzing_location");
 
       try {
@@ -80,6 +83,7 @@ export const useGenerateAIGuide = () => {
       }
 
       // Step 3: Analyze the image and return some tags
+
       setGenerationStep("analyzing_image");
 
       try {
@@ -92,6 +96,7 @@ export const useGenerateAIGuide = () => {
       }
 
       // Step 4: Generate the audio guide content
+
       setGenerationStep("generating_guide");
 
       try {
