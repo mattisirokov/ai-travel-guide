@@ -16,7 +16,13 @@ export function UserProfileCard({
   }
 
   return (
-    <>
+    <View
+      style={{
+        paddingVertical: 12,
+        backgroundColor: "white",
+        borderRadius: 12,
+      }}
+    >
       <Text style={styles.sectionTitle}>Your profile</Text>
       <View style={styles.sectionBody}>
         <View style={styles.profile}>
@@ -26,14 +32,10 @@ export function UserProfileCard({
             <Text style={styles.profileName}>
               {userProfile.first_name} {userProfile.last_name}
             </Text>
-
-            <Text style={styles.profileHandle}>
-              {userProfile.first_name}@example.com
-            </Text>
           </View>
         </View>
       </View>
-    </>
+    </View>
   );
 }
 

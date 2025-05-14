@@ -55,7 +55,7 @@ export default function RootLayout() {
       if (session) {
         router.replace("/(tabs)");
       } else {
-        router.replace("/login");
+        router.replace("/starter");
       }
     }
   }, [loaded, session]);
@@ -80,8 +80,8 @@ function RootLayoutNav() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="generateGuide" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="signUp" options={{ headerShown: false }} />
         <Stack.Screen name="guide" options={{ headerShown: false }} />
+        <Stack.Screen name="starter" options={{ headerShown: false }} />
       </Stack>
     </>
   );

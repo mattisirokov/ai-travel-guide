@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "@/config/supabase";
 import { UserProfile, LoadingStatus } from "@/types";
+import { router } from "expo-router";
 
 interface AuthStore {
   session: Session | null;
@@ -18,6 +19,7 @@ interface AuthStore {
     password: string,
     userData: { first_name: string; last_name: string }
   ) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -149,6 +151,14 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     ]);
 
     if (profileError) throw profileError;
+  },
+
+  signInWithGoogle: async (): Promise<void> => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+
+    if (error) throw error;
   },
 
   signOut: async (): Promise<void> => {

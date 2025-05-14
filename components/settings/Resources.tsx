@@ -1,6 +1,8 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { View, Text } from "@/components/Themed";
 
+import { router } from "expo-router";
+
 import FeatherIcon from "@expo/vector-icons/Feather";
 import React from "react";
 
@@ -13,11 +15,11 @@ export function Resources() {
         <View style={[styles.rowWrapper, styles.rowFirst]}>
           <TouchableOpacity
             onPress={() => {
-              // handle onPress
+              router.push("/onBoarding");
             }}
             style={styles.row}
           >
-            <Text style={styles.rowLabel}>Contact Us</Text>
+            <Text style={styles.rowLabel}>Open onboarding flow</Text>
 
             <View style={styles.rowSpacer} />
 
